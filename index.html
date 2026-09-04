@@ -277,114 +277,130 @@
     </main>
   </section>
 
-  <script>
-    /*
-     * Le token est conservé uniquement en mémoire JavaScript.
-     * Il n'est jamais enregistré dans localStorage.
-     */
-    let tokenSession = null;
+<script>
+  const API_URL =
+    "https://script.google.com/a/macros/saint-maclou.com/s/AKfycbzj_5Kvmu8T51FUF63BNWnalE0B2AVE0Ngi45ULlj3kEzonmDr8Np9ZKCZdTuRHZ0yg/exec";
 
-    const pageConnexion = document.getElementById("pageConnexion");
-    const pagePortail = document.getElementById("pagePortail");
-    const formConnexion = document.getElementById("formConnexion");
-    const messageConnexion = document.getElementById("messageConnexion");
+  let tokenSession = null;
 
-    formConnexion.addEventListener("submit", function(event) {
-      event.preventDefault();
+  const pageConnexion = document.getElementById("pageConnexion");
+  const pagePortail = document.getElementById("pagePortail");
+  const formConnexion = document.getElementById("formConnexion");
+  const messageConnexion = document.getElementById("messageConnexion");
 
-      const email = document.getElementById("email").value.trim();
-      const motDePasse = document.getElementById("motDePasse").value;
-
-      messageConnexion.textContent = "Connexion en cours...";
-      messageConnexion.classList.remove("succes");
-
-      google.script.run
-        .withSuccessHandler(function(resultat) {
-          if (!resultat.success) {
-            messageConnexion.textContent = resultat.message;
-            return;
-          }
-
-          tokenSession = resultat.token;
-
-          afficherPortail(resultat.utilisateur);
-          chargerDonneesPortail();
-        })
-        .withFailureHandler(function(erreur) {
-          messageConnexion.textContent =
-            "Erreur serveur : " + erreur.message;
-        })
-        .connexion(email, motDePasse);
+  async function appelerAPI(donnees) {
+    const reponse = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(donnees)
     });
 
-    document
-      .getElementById("boutonDeconnexion")
-      .addEventListener("click", function() {
-        if (!tokenSession) {
-          afficherConnexion();
-          return;
-        }
+    return await reponse.json();
+  }
 
-        google.script.run
-          .withSuccessHandler(function() {
-            tokenSession = null;
-            afficherConnexion();
-          })
-          .withFailureHandler(function() {
-            tokenSession = null;
-            afficherConnexion();
-          })
-          .deconnexion(tokenSession);
+  formConnexion.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const motDePasse =
+      document.getElementById("motDePasse").value;
+
+    messageConnexion.textContent = "Connexion en cours...";
+
+    try {
+      const resultat = await appelerAPI({
+        action: "connexion",
+        email: email,
+        motDePasse: motDePasse
       });
 
-    function afficherPortail(utilisateur) {
-      pageConnexion.classList.add("cache");
-      pagePortail.classList.remove("cache");
+      if (!resultat.success) {
+        messageConnexion.textContent = resultat.message;
+        return;
+      }
 
-      document.getElementById("nomUtilisateur").textContent =
-        utilisateur.nom;
+      tokenSession = resultat.token;
 
-      document.getElementById("roleUtilisateur").textContent =
-        utilisateur.role;
+      afficherPortail(resultat.utilisateur);
+      chargerDonneesPortail();
 
-      document.getElementById("identiteUtilisateur").textContent =
-        utilisateur.nom + " - " + utilisateur.role;
+    } catch (erreur) {
+      console.error(erreur);
+      messageConnexion.textContent =
+        "Impossible de contacter le serveur.";
     }
+  });
 
-    function afficherConnexion() {
-      pagePortail.classList.add("cache");
-      pageConnexion.classList.remove("cache");
+  document
+    .getElementById("boutonDeconnexion")
+    .addEventListener("click", async function() {
+      try {
+        await appelerAPI({
+          action: "deconnexion",
+          token: tokenSession
+        });
+      } catch (erreur) {
+        console.error(erreur);
+      }
 
-      formConnexion.reset();
-      messageConnexion.textContent = "";
+      tokenSession = null;
+      afficherConnexion();
+    });
+
+  function afficherPortail(utilisateur) {
+    pageConnexion.classList.add("cache");
+    pagePortail.classList.remove("cache");
+
+    document.getElementById("nomUtilisateur").textContent =
+      utilisateur.nom || "";
+
+    document.getElementById("roleUtilisateur").textContent =
+      utilisateur.role || "";
+
+    document.getElementById("identiteUtilisateur").textContent =
+      (utilisateur.nom || "") + " - " +
+      (utilisateur.role || "");
+  }
+
+  function afficherConnexion() {
+    pagePortail.classList.add("cache");
+    pageConnexion.classList.remove("cache");
+
+    formConnexion.reset();
+    messageConnexion.textContent = "";
+  }
+
+  async function chargerDonneesPortail() {
+    try {
+      const resultat = await appelerAPI({
+        action: "obtenirDonneesPortail",
+        token: tokenSession
+      });
+
+      if (!resultat.success) {
+        tokenSession = null;
+        afficherConnexion();
+        messageConnexion.textContent = resultat.message;
+        return;
+      }
+
+      document.getElementById("visitesMois").textContent =
+        resultat.statistiques.visitesMois;
+
+      document.getElementById("visitesAPlanifier").textContent =
+        resultat.statistiques.visitesAPlanifier;
+
+      document.getElementById("visitesTerminees").textContent =
+        resultat.statistiques.visitesTerminees;
+
+    } catch (erreur) {
+      console.error(erreur);
+      messageConnexion.textContent =
+        "Impossible de charger les données.";
     }
-
-    function chargerDonneesPortail() {
-      google.script.run
-        .withSuccessHandler(function(resultat) {
-          if (!resultat.success) {
-            tokenSession = null;
-            afficherConnexion();
-            messageConnexion.textContent = resultat.message;
-            return;
-          }
-
-          document.getElementById("visitesMois").textContent =
-            resultat.statistiques.visitesMois;
-
-          document.getElementById("visitesAPlanifier").textContent =
-            resultat.statistiques.visitesAPlanifier;
-
-          document.getElementById("visitesTerminees").textContent =
-            resultat.statistiques.visitesTerminees;
-        })
-        .withFailureHandler(function() {
-          messageConnexion.textContent =
-            "Impossible de charger les données du portail.";
-        })
-        .obtenirDonneesPortail(tokenSession);
-    }
-  </script>
-
+  }
+</script>
 </body>
 </html>
