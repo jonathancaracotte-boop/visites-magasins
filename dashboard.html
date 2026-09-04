@@ -23,14 +23,9 @@
       padding: 20px;
     }
 
-    .header-content,
-    .container {
-      width: 92%;
+    .header-content {
       max-width: 1200px;
       margin: auto;
-    }
-
-    .header-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -47,11 +42,6 @@
       color: #e5e7eb;
     }
 
-    button {
-      cursor: pointer;
-      font-weight: bold;
-    }
-
     .btn-deconnexion {
       width: auto;
       padding: 10px 16px;
@@ -59,10 +49,18 @@
       border-radius: 6px;
       background: #dc2626;
       color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-deconnexion:hover {
+      background: #b91c1c;
     }
 
     .container {
-      margin-top: 25px;
+      width: 92%;
+      max-width: 1200px;
+      margin: 25px auto;
     }
 
     .cartes {
@@ -72,15 +70,11 @@
       margin-bottom: 25px;
     }
 
-    .carte,
-    .bloc {
+    .carte {
       background: white;
+      padding: 20px;
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    .carte {
-      padding: 20px;
       text-align: center;
     }
 
@@ -96,8 +90,11 @@
     }
 
     .bloc {
+      background: white;
       padding: 25px;
       margin-bottom: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
     .bloc h2 {
@@ -143,47 +140,17 @@
       grid-column: 1 / -1;
     }
 
-    .indicateurs {
-      grid-column: 1 / -1;
-      margin-top: 10px;
-      padding: 18px;
-      background: #f8fafc;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
-    }
-
-    .indicateur {
-      display: grid;
-      grid-template-columns: 1fr 180px 100px;
-      gap: 10px;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .indicateur:last-child {
-      border-bottom: none;
-    }
-
-    .indicateur label {
-      margin: 0;
-    }
-
-    .conformite-apercu {
-      margin-top: 15px;
-      padding: 14px;
-      background: #dbeafe;
-      color: #1e40af;
-      border-radius: 7px;
-      font-weight: bold;
-      text-align: center;
-    }
-
     .btn-enregistrer {
       margin-top: 18px;
       border: none;
       background: #16a34a;
       color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-enregistrer:hover {
+      background: #15803d;
     }
 
     .visite {
@@ -195,28 +162,61 @@
       line-height: 1.7;
     }
 
-    .note {
-      display: inline-block;
-      padding: 5px 10px;
-      border-radius: 5px;
-      background: #16a34a;
-      color: white;
-      font-weight: bold;
-    }
-
     .aucune {
       color: #6b7280;
       font-style: italic;
     }
 
-    @media (max-width: 700px) {
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: white;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border: 1px solid #e5e7eb;
+      text-align: left;
+    }
+
+    th {
+      background: #2453d4;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .note-positive {
+      color: #15803d;
+      font-weight: bold;
+    }
+
+    .note-moyenne {
+      color: #d97706;
+      font-weight: bold;
+    }
+
+    .note-faible {
+      color: #dc2626;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
       .header-content {
         flex-direction: column;
         align-items: stretch;
       }
 
-      .indicateur {
-        grid-template-columns: 1fr;
+      header h1 {
+        font-size: 20px;
       }
     }
   </style>
@@ -224,414 +224,462 @@
 
 <body>
 
-<header>
-  <div class="header-content">
-    <div>
-      <h1>Suivi des visites magasin</h1>
-      <p id="utilisateurConnecte"></p>
-    </div>
-
-    <button class="btn-deconnexion" onclick="deconnexion()">
-      Se déconnecter
-    </button>
-  </div>
-</header>
-
-<main class="container">
-
-  <section class="cartes">
-    <div class="carte">
-      <h3>Total des visites</h3>
-      <strong id="nombreVisites">0</strong>
-    </div>
-
-    <div class="carte">
-      <h3>Visites terminées</h3>
-      <strong id="visitesTerminees">0</strong>
-    </div>
-
-    <div class="carte">
-      <h3>Visites à corriger</h3>
-      <strong id="visitesCorriger">0</strong>
-    </div>
-
-    <div class="carte">
-      <h3>Conformité moyenne</h3>
-      <strong id="conformiteMoyenne">-</strong>
-    </div>
-  </section>
-
-  <section class="bloc">
-    <h2>Enregistrer une visite</h2>
-
-    <form id="visiteForm">
-
-      <div class="grille">
-
-        <div>
-          <label for="magasin">Magasin</label>
-          <select id="magasin" required>
-            <option value="">Sélectionner un magasin</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="date">Date de la visite</label>
-          <input type="date" id="date" required>
-        </div>
-
-        <div>
-          <label for="typeVisite">Type de visite</label>
-          <select id="typeVisite" required>
-            <option value="">Sélectionner un type</option>
-            <option>Visite magasin</option>
-            <option>Visite sécurité</option>
-            <option>Visite commerciale</option>
-            <option>Visite chantier</option>
-            <option>Autre</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="statut">Statut</label>
-          <select id="statut" required>
-            <option value="">Sélectionner un statut</option>
-            <option>Terminée</option>
-            <option>Validée</option>
-            <option>À corriger</option>
-            <option>En cours</option>
-          </select>
-        </div>
-
-        <div class="indicateurs">
-          <h3>Évaluation de conformité</h3>
-
-          <div class="indicateur">
-            <label for="indicateur1">Accueil client</label>
-            <select id="indicateur1">
-              <option value="">Non évalué</option>
-              <option value="Conforme">Conforme</option>
-              <option value="Non conforme">Non conforme</option>
-              <option value="Non applicable">Non applicable</option>
-            </select>
-            <input type="number" id="points1" value="1" min="0">
-          </div>
-
-          <div class="indicateur">
-            <label for="indicateur2">Tenue du magasin</label>
-            <select id="indicateur2">
-              <option value="">Non évalué</option>
-              <option value="Conforme">Conforme</option>
-              <option value="Non conforme">Non conforme</option>
-              <option value="Non applicable">Non applicable</option>
-            </select>
-            <input type="number" id="points2" value="1" min="0">
-          </div>
-
-          <div class="indicateur">
-            <label for="indicateur3">Affichage obligatoire</label>
-            <select id="indicateur3">
-              <option value="">Non évalué</option>
-              <option value="Conforme">Conforme</option>
-              <option value="Non conforme">Non conforme</option>
-              <option value="Non applicable">Non applicable</option>
-            </select>
-            <input type="number" id="points3" value="1" min="0">
-          </div>
-
-          <div class="indicateur">
-            <label for="indicateur4">Sécurité du magasin</label>
-            <select id="indicateur4">
-              <option value="">Non évalué</option>
-              <option value="Conforme">Conforme</option>
-              <option value="Non conforme">Non conforme</option>
-              <option value="Non applicable">Non applicable</option>
-            </select>
-            <input type="number" id="points4" value="1" min="0">
-          </div>
-
-          <div class="indicateur">
-            <label for="indicateur5">Respect des procédures</label>
-            <select id="indicateur5">
-              <option value="">Non évalué</option>
-              <option value="Conforme">Conforme</option>
-              <option value="Non conforme">Non conforme</option>
-              <option value="Non applicable">Non applicable</option>
-            </select>
-            <input type="number" id="points5" value="1" min="0">
-          </div>
-
-          <div class="conformite-apercu">
-            Conformité calculée :
-            <span id="conformiteApercu">-</span>
-          </div>
-        </div>
-
-        <div class="champ-complet">
-          <label for="commentaire">Commentaire</label>
-          <textarea id="commentaire" placeholder="Ajouter un commentaire..."></textarea>
-        </div>
-
+  <header>
+    <div class="header-content">
+      <div>
+        <h1>Suivi des visites magasin</h1>
+        <p id="utilisateurConnecte"></p>
       </div>
 
-      <button type="submit" class="btn-enregistrer">
-        Enregistrer la visite
+      <button class="btn-deconnexion" onclick="deconnexion()">
+        Se déconnecter
       </button>
+    </div>
+  </header>
 
-    </form>
-  </section>
+  <main class="container">
 
-  <section class="bloc">
-    <h2>Historique des visites</h2>
-    <div id="listeVisites"></div>
-  </section>
+    <section class="cartes">
+      <div class="carte">
+        <h3>Total des visites</h3>
+        <strong id="nombreVisites">0</strong>
+      </div>
 
-</main>
+      <div class="carte">
+        <h3>Visites terminées</h3>
+        <strong id="visitesTerminees">0</strong>
+      </div>
 
-<script>
-  const magasins = [
-    { code: "005", nom: "CHERBOURG" },
-    { code: "008", nom: "TOURS CHAMBRAY II" },
-    { code: "009", nom: "CHANTEPIE" },
-    { code: "012", nom: "ANGERS" },
-    { code: "023", nom: "VINEUIL" },
-    { code: "028", nom: "ST ET.D.ROUVRAY" },
-    { code: "051", nom: "ORLEANS SARAN" },
-    { code: "053", nom: "LANESTER" },
-    { code: "087", nom: "VANNES PLOEREN" },
-    { code: "095", nom: "MONTGERMONT" },
-    { code: "098", nom: "LAVAL" },
-    { code: "100", nom: "QUIMPER" },
-    { code: "106", nom: "BARENTIN" },
-    { code: "121", nom: "MONDEVILLE ETOILE" },
-    { code: "123", nom: "LANGUEUX" },
-    { code: "139", nom: "LE MANS-CLEMENCEAU" },
-    { code: "159", nom: "GONFREVILLE" },
-    { code: "173", nom: "BREST GOUESNOU" },
-    { code: "188", nom: "CHARTRES" },
-    { code: "201", nom: "DIEPPE" },
-    { code: "217", nom: "LANNION" },
-    { code: "218", nom: "ST MALO" },
-    { code: "222", nom: "EVREUX" },
-    { code: "237", nom: "ORLEANS" }
-  ];
+      <div class="carte">
+        <h3>Visites à corriger</h3>
+        <strong id="visitesCorriger">0</strong>
+      </div>
+    </section>
 
-  const utilisateur = JSON.parse(
-    localStorage.getItem("utilisateurConnecte")
-  );
+    <section class="bloc">
+      <h2>Récapitulatif annuel</h2>
 
-  if (!utilisateur) {
-    window.location.href = "index.html";
-  }
+      <p>
+        Période analysée :
+        <strong>du 1er janvier au 31 décembre <span id="anneeAnalysee"></span></strong>
+      </p>
 
-  document.getElementById("utilisateurConnecte").textContent =
-    utilisateur.nom + " - rôle : " + utilisateur.role;
+      <div class="table-responsive">
+        <table>
+          <thead id="enteteRecap"></thead>
+          <tbody id="corpsRecap"></tbody>
+        </table>
+      </div>
+    </section>
 
-  magasins.forEach(function(magasin) {
-    const option = document.createElement("option");
-    option.value = magasin.code;
-    option.textContent = magasin.code + " - " + magasin.nom;
-    document.getElementById("magasin").appendChild(option);
-  });
+    <section class="bloc">
+      <h2>Enregistrer une visite</h2>
 
-  document.getElementById("date").value =
-    new Date().toISOString().split("T")[0];
+      <form id="visiteForm">
+        <div class="grille">
 
-  function recupererVisites() {
-    return JSON.parse(
-      localStorage.getItem("visitesMagasins") || "[]"
+          <div>
+            <label for="magasin">Magasin</label>
+            <select id="magasin" required>
+              <option value="">Sélectionner un magasin</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="date">Date de la visite</label>
+            <input type="date" id="date" required>
+          </div>
+
+          <div>
+            <label for="typeVisite">Type de visite</label>
+            <select id="typeVisite" required>
+              <option value="">Sélectionner un type</option>
+              <option value="Visite magasin">Visite magasin</option>
+              <option value="Visite sécurité">Visite sécurité</option>
+              <option value="Visite commerciale">Visite commerciale</option>
+              <option value="Visite chantier">Visite chantier</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="statut">Statut</label>
+            <select id="statut" required>
+              <option value="">Sélectionner un statut</option>
+              <option value="Terminée">Terminée</option>
+              <option value="Validée">Validée</option>
+              <option value="À corriger">À corriger</option>
+              <option value="En cours">En cours</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="note">Note sur 100</label>
+            <input
+              type="number"
+              id="note"
+              min="0"
+              max="100"
+              step="1"
+              placeholder="Exemple : 85"
+              required
+            >
+          </div>
+
+          <div class="champ-complet">
+            <label for="commentaire">Commentaire</label>
+            <textarea
+              id="commentaire"
+              placeholder="Ajouter un commentaire..."
+            ></textarea>
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn-enregistrer">
+          Enregistrer la visite
+        </button>
+      </form>
+    </section>
+
+    <section class="bloc">
+      <h2>Historique des visites</h2>
+      <div id="listeVisites"></div>
+    </section>
+
+  </main>
+
+  <script>
+    const magasins = [
+      { code: "005", nom: "CHERBOURG" },
+      { code: "008", nom: "TOURS CHAMBRAY II" },
+      { code: "009", nom: "CHANTEPIE" },
+      { code: "012", nom: "ANGERS" },
+      { code: "023", nom: "VINEUIL" },
+      { code: "028", nom: "ST ET.D.ROUVRAY" },
+      { code: "051", nom: "ORLEANS SARAN" },
+      { code: "053", nom: "LANESTER" },
+      { code: "087", nom: "VANNES PLOEREN" },
+      { code: "095", nom: "MONTGERMONT" },
+      { code: "098", nom: "LAVAL" },
+      { code: "100", nom: "QUIMPER" },
+      { code: "106", nom: "BARENTIN" },
+      { code: "121", nom: "MONDEVILLE ETOILE" },
+      { code: "123", nom: "LANGUEUX" },
+      { code: "139", nom: "LE MANS-CLEMENCEAU" },
+      { code: "159", nom: "GONFREVILLE" },
+      { code: "173", nom: "BREST GOUESNOU" },
+      { code: "188", nom: "CHARTRES" },
+      { code: "201", nom: "DIEPPE" },
+      { code: "217", nom: "LANNION" },
+      { code: "218", nom: "ST MALO" },
+      { code: "222", nom: "EVREUX" },
+      { code: "237", nom: "ORLEANS" }
+    ];
+
+    const utilisateur = JSON.parse(
+      localStorage.getItem("utilisateurConnecte")
     );
-  }
 
-  function recupererIndicateurs() {
-    const indicateurs = [];
+    if (!utilisateur) {
+      window.location.href = "index.html";
+    }
 
-    for (let i = 1; i <= 5; i++) {
-      const reponse = document.getElementById("indicateur" + i).value;
-      const points = Number(
-        document.getElementById("points" + i).value
-      ) || 0;
+    const anneeActuelle = new Date().getFullYear();
 
-      if (reponse !== "") {
-        indicateurs.push({
-          question: document
-            .querySelector("#indicateur" + i)
-            .previousElementSibling.textContent,
-          reponse: reponse,
-          points: points
+    document.getElementById("anneeAnalysee").textContent =
+      anneeActuelle;
+
+    document.getElementById("utilisateurConnecte").textContent =
+      utilisateur.nom + " - rôle : " + utilisateur.role;
+
+    const selectMagasin = document.getElementById("magasin");
+
+    magasins.forEach(function(magasin) {
+      const option = document.createElement("option");
+
+      option.value = magasin.code;
+      option.textContent =
+        magasin.code + " - " + magasin.nom;
+
+      selectMagasin.appendChild(option);
+    });
+
+    document.getElementById("date").value =
+      new Date().toISOString().split("T")[0];
+
+    function recupererVisites() {
+      return JSON.parse(
+        localStorage.getItem("visitesMagasins") || "[]"
+      );
+    }
+
+    function obtenirVisitesAnnuelles(visites) {
+      return visites.filter(function(visite) {
+        return visite.date &&
+          new Date(visite.date + "T00:00:00").getFullYear() === anneeActuelle;
+      });
+    }
+
+    function obtenirNote(visite) {
+      const note = Number(visite.note);
+
+      if (
+        visite.note === null ||
+        visite.note === undefined ||
+        visite.note === "" ||
+        isNaN(note)
+      ) {
+        return null;
+      }
+
+      return Math.max(0, Math.min(100, note));
+    }
+
+    function formaterNote(note) {
+      if (note === null || note === undefined) {
+        return "Non renseignée";
+      }
+
+      let classe = "note-faible";
+
+      if (note >= 80) {
+        classe = "note-positive";
+      } else if (note >= 50) {
+        classe = "note-moyenne";
+      }
+
+      return `<span class="${classe}">${note.toFixed(1)} / 100</span>`;
+    }
+
+    function calculerMoyenne(visites) {
+      const notes = visites
+        .map(obtenirNote)
+        .filter(function(note) {
+          return note !== null;
+        });
+
+      if (notes.length === 0) {
+        return null;
+      }
+
+      return notes.reduce(function(total, note) {
+        return total + note;
+      }, 0) / notes.length;
+    }
+
+    function obtenirDerniereNote(visites) {
+      const visitesNotees = visites
+        .filter(function(visite) {
+          return obtenirNote(visite) !== null;
+        })
+        .slice()
+        .sort(function(a, b) {
+          return new Date(b.date) - new Date(a.date);
+        });
+
+      if (visitesNotees.length === 0) {
+        return null;
+      }
+
+      return obtenirNote(visitesNotees[0]);
+    }
+
+    function ajouterLigneRecap(libelle, visites) {
+      const ligne = document.createElement("tr");
+
+      ligne.innerHTML = `
+        <td>${libelle}</td>
+        <td>${visites.length}</td>
+        <td>${formaterNote(calculerMoyenne(visites))}</td>
+        <td>${formaterNote(obtenirDerniereNote(visites))}</td>
+      `;
+
+      document.getElementById("corpsRecap").appendChild(ligne);
+    }
+
+    function afficherRecapitulatif(toutesLesVisites) {
+      const entete = document.getElementById("enteteRecap");
+      const corps = document.getElementById("corpsRecap");
+
+      entete.innerHTML = "";
+      corps.innerHTML = "";
+
+      const visitesAnnuelles = obtenirVisitesAnnuelles(
+        toutesLesVisites
+      );
+
+      if (utilisateur.role === "DR") {
+        document.querySelector(".bloc h2").textContent =
+          "Récapitulatif annuel par métier";
+
+        entete.innerHTML = `
+          <tr>
+            <th>Métier</th>
+            <th>Nombre de visites</th>
+            <th>Note moyenne</th>
+            <th>Dernière note</th>
+          </tr>
+        `;
+
+        const metiers = [
+          { code: "ROV", nom: "Responsable Opérationnel Vente" },
+          { code: "RSR", nom: "Responsable Service et Pose" },
+          { code: "RRH", nom: "Responsable Ressources Humaines" },
+          { code: "DR", nom: "Direction Régionale" }
+        ];
+
+        metiers.forEach(function(metier) {
+          const visitesMetier = visitesAnnuelles.filter(function(visite) {
+            return visite.role === metier.code;
+          });
+
+          ajouterLigneRecap(
+            metier.code + " - " + metier.nom,
+            visitesMetier
+          );
+        });
+
+      } else {
+        document.querySelector(".bloc h2").textContent =
+          "Récapitulatif annuel par magasin";
+
+        entete.innerHTML = `
+          <tr>
+            <th>Magasin</th>
+            <th>Nombre de visites</th>
+            <th>Note moyenne</th>
+            <th>Dernière note</th>
+          </tr>
+        `;
+
+        magasins.forEach(function(magasin) {
+          const visitesMagasin = visitesAnnuelles.filter(function(visite) {
+            return visite.role === utilisateur.role &&
+              visite.magasin === magasin.code;
+          });
+
+          ajouterLigneRecap(
+            magasin.code + " - " + magasin.nom,
+            visitesMagasin
+          );
         });
       }
     }
 
-    return indicateurs;
-  }
+    function afficherVisites() {
+      const toutesLesVisites = recupererVisites();
 
-  function calculerConformite(indicateurs) {
-    let pointsConformes = 0;
-    let pointsEvalues = 0;
+      const visites = utilisateur.role === "DR"
+        ? toutesLesVisites
+        : toutesLesVisites.filter(function(visite) {
+            return visite.role === utilisateur.role;
+          });
 
-    indicateurs.forEach(function(indicateur) {
-      if (indicateur.reponse === "Non applicable") {
+      document.getElementById("nombreVisites").textContent =
+        visites.length;
+
+      document.getElementById("visitesTerminees").textContent =
+        visites.filter(function(visite) {
+          return visite.statut === "Terminée" ||
+                 visite.statut === "Validée";
+        }).length;
+
+      document.getElementById("visitesCorriger").textContent =
+        visites.filter(function(visite) {
+          return visite.statut === "À corriger";
+        }).length;
+
+      afficherRecapitulatif(visites);
+
+      const liste = document.getElementById("listeVisites");
+
+      if (visites.length === 0) {
+        liste.innerHTML =
+          '<p class="aucune">Aucune visite enregistrée.</p>';
         return;
       }
 
-      pointsEvalues += Number(indicateur.points) || 0;
+      liste.innerHTML = "";
 
-      if (indicateur.reponse === "Conforme") {
-        pointsConformes += Number(indicateur.points) || 0;
-      }
-    });
+      visites
+        .slice()
+        .sort(function(a, b) {
+          return new Date(b.date) - new Date(a.date);
+        })
+        .forEach(function(visite) {
+          const magasin = magasins.find(function(item) {
+            return item.code === visite.magasin;
+          });
 
-    if (pointsEvalues === 0) {
-      return null;
+          const nomMagasin = magasin
+            ? magasin.code + " - " + magasin.nom
+            : visite.magasin;
+
+          liste.innerHTML += `
+            <article class="visite">
+              <strong>${visite.type}</strong><br>
+              <b>Magasin :</b> ${nomMagasin}<br>
+              <b>Date :</b> ${visite.date}<br>
+              <b>Note :</b> ${formaterNote(obtenirNote(visite))}<br>
+              <b>Statut :</b> ${visite.statut}<br>
+              <b>Auteur :</b> ${visite.auteur}<br>
+              <b>Commentaire :</b>
+              ${visite.commentaire || "Aucun commentaire"}
+            </article>
+          `;
+        });
     }
 
-    return Math.round(
-      (pointsConformes / pointsEvalues) * 100
-    );
-  }
+    document
+      .getElementById("visiteForm")
+      .addEventListener("submit", function(event) {
+        event.preventDefault();
 
-  function afficherConformiteApercu() {
-    const indicateurs = recupererIndicateurs();
-    const conformite = calculerConformite(indicateurs);
+        const note = Number(
+          document.getElementById("note").value
+        );
 
-    document.getElementById("conformiteApercu").textContent =
-      conformite === null ? "-" : conformite + " %";
-  }
+        if (note < 0 || note > 100) {
+          alert("La note doit être comprise entre 0 et 100.");
+          return;
+        }
 
-  document.querySelectorAll(".indicateurs select, .indicateurs input")
-    .forEach(function(element) {
-      element.addEventListener("change", afficherConformiteApercu);
-      element.addEventListener("input", afficherConformiteApercu);
-    });
+        const visites = recupererVisites();
 
-  function afficherVisites() {
-    const toutesLesVisites = recupererVisites();
-
-    const visites = utilisateur.role === "DR"
-      ? toutesLesVisites
-      : toutesLesVisites.filter(function(visite) {
-          return visite.role === utilisateur.role;
+        visites.push({
+          magasin: document.getElementById("magasin").value,
+          date: document.getElementById("date").value,
+          type: document.getElementById("typeVisite").value,
+          statut: document.getElementById("statut").value,
+          note: note,
+          commentaire: document.getElementById("commentaire").value,
+          role: utilisateur.role,
+          auteur: utilisateur.nom
         });
 
-    document.getElementById("nombreVisites").textContent =
-      visites.length;
+        localStorage.setItem(
+          "visitesMagasins",
+          JSON.stringify(visites)
+        );
 
-    document.getElementById("visitesTerminees").textContent =
-      visites.filter(function(visite) {
-        return visite.statut === "Terminée" ||
-               visite.statut === "Validée";
-      }).length;
+        alert("La visite a bien été enregistrée.");
 
-    document.getElementById("visitesCorriger").textContent =
-      visites.filter(function(visite) {
-        return visite.statut === "À corriger";
-      }).length;
+        document.getElementById("visiteForm").reset();
 
-    const conformites = visites
-      .map(function(visite) {
-        return visite.conformite;
-      })
-      .filter(function(note) {
-        return note !== null && note !== undefined;
+        document.getElementById("date").value =
+          new Date().toISOString().split("T")[0];
+
+        afficherVisites();
       });
 
-    const moyenne = conformites.length
-      ? Math.round(
-          conformites.reduce(function(total, note) {
-            return total + note;
-          }, 0) / conformites.length
-        )
-      : null;
-
-    document.getElementById("conformiteMoyenne").textContent =
-      moyenne === null ? "-" : moyenne + " %";
-
-    const liste = document.getElementById("listeVisites");
-
-    if (visites.length === 0) {
-      liste.innerHTML =
-        '<p class="aucune">Aucune visite enregistrée.</p>';
-      return;
+    function deconnexion() {
+      localStorage.removeItem("utilisateurConnecte");
+      window.location.href = "index.html";
     }
 
-    liste.innerHTML = "";
-
-    visites.slice().reverse().forEach(function(visite) {
-      const magasin = magasins.find(function(item) {
-        return item.code === visite.magasin;
-      });
-
-      const nomMagasin = magasin
-        ? magasin.code + " - " + magasin.nom
-        : visite.magasin;
-
-      const conformite = visite.conformite === null ||
-        visite.conformite === undefined
-        ? "Non calculée"
-        : visite.conformite + " %";
-
-      liste.innerHTML += `
-        <article class="visite">
-          <strong>${visite.type}</strong><br>
-          <b>Magasin :</b> ${nomMagasin}<br>
-          <b>Date :</b> ${visite.date}<br>
-          <b>Statut :</b> ${visite.statut}<br>
-          <b>Conformité :</b>
-          <span class="note">${conformite}</span><br>
-          <b>Auteur :</b> ${visite.auteur}<br>
-          <b>Commentaire :</b>
-          ${visite.commentaire || "Aucun commentaire"}
-        </article>
-      `;
-    });
-  }
-
-  document.getElementById("visiteForm")
-    .addEventListener("submit", function(event) {
-      event.preventDefault();
-
-      const indicateurs = recupererIndicateurs();
-      const conformite = calculerConformite(indicateurs);
-
-      const visites = recupererVisites();
-
-      visites.push({
-        magasin: document.getElementById("magasin").value,
-        date: document.getElementById("date").value,
-        type: document.getElementById("typeVisite").value,
-        statut: document.getElementById("statut").value,
-        commentaire: document.getElementById("commentaire").value,
-        indicateurs: indicateurs,
-        conformite: conformite,
-        role: utilisateur.role,
-        auteur: utilisateur.nom
-      });
-
-      localStorage.setItem(
-        "visitesMagasins",
-        JSON.stringify(visites)
-      );
-
-      alert("La visite a bien été enregistrée.");
-
-      document.getElementById("visiteForm").reset();
-
-      document.getElementById("date").value =
-        new Date().toISOString().split("T")[0];
-
-      document.getElementById("conformiteApercu").textContent = "-";
-
-      afficherVisites();
-    });
-
-  function deconnexion() {
-    localStorage.removeItem("utilisateurConnecte");
-    window.location.href = "index.html";
-  }
-
-  afficherVisites();
-</script>
+    afficherVisites();
+  </script>
 
 </body>
 </html>
