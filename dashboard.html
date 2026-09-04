@@ -174,7 +174,6 @@
 
     .aucune {
       color: #6b7280;
-      font-style: italic;
     }
 
     @media (max-width: 700px) {
@@ -240,25 +239,30 @@
     <div class="card">
       <h2>Actions</h2>
 
-      <button onclick="afficherPageVisite()">
+      <button type="button" onclick="afficherPageVisite()">
         + Créer une visite
       </button>
 
-      <button class="secondary" onclick="actualiserDashboard()">
+      <button
+        type="button"
+        class="secondary"
+        onclick="actualiserDashboard()"
+      >
         Actualiser
       </button>
     </div>
 
     <div class="card">
       <h2>Dernières visites</h2>
+
       <div id="listeVisites">
-        <p class="aucune">Aucune visite enregistrée.</p>
+        Aucune visite enregistrée.
       </div>
     </div>
 
   </section>
 
-  <!-- CRÉATION D'UNE VISITE -->
+  <!-- PAGE DE CRÉATION D'UNE VISITE -->
 
   <section id="pageVisite">
 
@@ -271,12 +275,7 @@
 
           <div>
             <label for="magasin">Magasin</label>
-
-            <select id="magasin" required>
-              <option value="">
-                Sélectionner un magasin
-              </option>
-            </select>
+            <select id="magasin" required></select>
           </div>
 
           <div>
@@ -302,6 +301,7 @@
             <input
               type="text"
               id="visiteur"
+              placeholder="Nom du visiteur"
             >
           </div>
 
@@ -318,14 +318,11 @@
           </div>
 
         </div>
+
       </form>
     </div>
 
-    <!-- RUBRIQUES ET CONTRÔLES -->
-
     <div id="rubriquesVisite"></div>
-
-    <!-- INFORMATIONS DIVERSES -->
 
     <div class="card">
       <h2>Informations diverses</h2>
@@ -335,8 +332,6 @@
         placeholder="Commentaires et remarques diverses"
       ></textarea>
     </div>
-
-    <!-- ACTIONS PRIORITAIRES -->
 
     <div class="card">
       <h2>Actions prioritaires</h2>
@@ -349,14 +344,8 @@
         </div>
 
         <div>
-          <label for="responsableAction1">
-            Responsable
-          </label>
-
-          <input
-            type="text"
-            id="responsableAction1"
-          >
+          <label for="responsableAction1">Responsable</label>
+          <input type="text" id="responsableAction1">
         </div>
 
         <div>
@@ -376,8 +365,6 @@
 
       </div>
     </div>
-
-    <!-- ENREGISTREMENT -->
 
     <div class="card">
 
@@ -420,6 +407,7 @@
         </button>
 
       </div>
+
     </div>
 
   </section>
@@ -427,9 +415,6 @@
 </main>
 
 <script>
-
-  /* UTILISATEUR CONNECTÉ */
-
   const utilisateur = JSON.parse(
     localStorage.getItem("utilisateurConnecte")
   );
@@ -437,8 +422,6 @@
   if (!utilisateur) {
     window.location.href = "index.html";
   }
-
-  /* LISTE DES MAGASINS */
 
   const magasins = [
     ["005", "CHERBOURG"],
@@ -467,10 +450,7 @@
     ["237", "ORLEANS"]
   ];
 
-  /* CONFIGURATION DES MÉTIERS */
-
   const configurations = {
-
     DR: {
       titre: "Tableau de bord global - Direction Régionale",
       visite: "Visite DR - Visite globale",
@@ -620,27 +600,22 @@
         ]
       }
     }
-
   };
 
+  const configuration =
+    configurations[utilisateur.role] || configurations.DR;
+
   document.getElementById("utilisateurConnecte").textContent =
-    utilisateur.nom + " - rôle : " + utilisateur.role;
+    utilisateur.nom + " - " + utilisateur.role;
 
-  if (configurations[utilisateur.role]) {
-    document.getElementById("titreDashboard").textContent =
-      configurations[utilisateur.role].titre;
-  }
-
-  /* CHARGEMENT DES MAGASINS */
+  document.getElementById("titreDashboard").textContent =
+    configuration.titre;
 
   function chargerMagasins() {
     const select = document.getElementById("magasin");
 
-    select.innerHTML = `
-      <option value="">
-        Sélectionner un magasin
-      </option>
-    `;
+    select.innerHTML =
+      '<option value="">Sélectionner un magasin</option>';
 
     magasins.forEach(function(magasin) {
       const option = document.createElement("option");
@@ -652,62 +627,30 @@
     });
   }
 
-  /* AFFICHAGE DES RUBRIQUES */
-
   function afficherRubriques() {
     const zone = document.getElementById("rubriquesVisite");
 
     zone.innerHTML = "";
 
-    const configuration =
-      configurations[utilisateur.role];
-
-    if (!configuration) {
-      zone.innerHTML = `
-        <div class="card">
-          <p>Configuration du métier introuvable.</p>
-        </div>
-      `;
-
-      return;
-    }
-
     Object.entries(configuration.rubriques).forEach(
-      function([nomRubrique, controles]) {
-
+      function([nom, controles]) {
         const section = document.createElement("div");
+
         section.className = "card";
 
-        section.innerHTML = `
-          <h2>${nomRubrique}</h2>
-        `;
+        section.innerHTML = `<h2>${nom}</h2>`;
 
         controles.forEach(function(controle) {
           section.innerHTML += `
             <div class="controle">
-
               <strong>${controle}</strong>
 
               <select class="evaluation">
-                <option value="">
-                  Évaluer
-                </option>
-
-                <option value="OK">
-                  OK
-                </option>
-
-                <option value="PARTIEL">
-                  Partiel
-                </option>
-
-                <option value="NON">
-                  Non conforme
-                </option>
-
-                <option value="NE">
-                  Non évalué
-                </option>
+                <option value="">Évaluer</option>
+                <option value="OK">OK</option>
+                <option value="PARTIEL">Partiel</option>
+                <option value="NON">Non conforme</option>
+                <option value="NE">Non évalué</option>
               </select>
 
               <input
@@ -715,7 +658,6 @@
                 class="commentaire"
                 placeholder="Commentaire"
               >
-
             </div>
           `;
         });
@@ -734,17 +676,12 @@
     );
   }
 
-  /* AFFICHER LA PAGE DE CRÉATION */
-
   function afficherPageVisite() {
     document.getElementById("pageDashboard").style.display =
       "none";
 
     document.getElementById("pageVisite").style.display =
       "block";
-
-    const configuration =
-      configurations[utilisateur.role];
 
     document.getElementById("titreVisite").textContent =
       configuration.visite;
@@ -757,9 +694,12 @@
 
     chargerMagasins();
     afficherRubriques();
-  }
 
-  /* RETOUR AU TABLEAU DE BORD */
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
 
   function retourDashboard() {
     document.getElementById("pageVisite").style.display =
@@ -769,9 +709,12 @@
       "block";
 
     actualiserDashboard();
-  }
 
-  /* CALCUL DE CONFORMITÉ */
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
 
   function calculerConformite() {
     const evaluations =
@@ -781,7 +724,6 @@
     let conformes = 0;
 
     evaluations.forEach(function(evaluation) {
-
       if (
         evaluation.value === "OK" ||
         evaluation.value === "PARTIEL" ||
@@ -805,36 +747,6 @@
     return taux;
   }
 
-  /* RÉCUPÉRATION DES ÉVALUATIONS */
-
-  function recupererEvaluations() {
-    const evaluations = [];
-
-    document.querySelectorAll(".controle").forEach(
-      function(controle) {
-
-        const intitule =
-          controle.querySelector("strong").textContent;
-
-        const evaluation =
-          controle.querySelector(".evaluation").value;
-
-        const commentaire =
-          controle.querySelector(".commentaire").value;
-
-        evaluations.push({
-          intitule: intitule,
-          evaluation: evaluation,
-          commentaire: commentaire
-        });
-      }
-    );
-
-    return evaluations;
-  }
-
-  /* ENREGISTREMENT DE LA VISITE */
-
   function enregistrerVisite() {
     const magasin =
       document.getElementById("magasin").value;
@@ -847,20 +759,32 @@
       return;
     }
 
-    const taux = calculerConformite();
+    const evaluations = [];
+
+    document.querySelectorAll(".controle").forEach(
+      function(controle) {
+        evaluations.push({
+          intitule:
+            controle.querySelector("strong").textContent,
+
+          evaluation:
+            controle.querySelector(".evaluation").value,
+
+          commentaire:
+            controle.querySelector(".commentaire").value
+        });
+      }
+    );
 
     const visite = {
       id: Date.now(),
 
       role: utilisateur.role,
 
-      auteur: utilisateur.nom,
-
       visiteur:
         document.getElementById("visiteur").value,
 
-      type:
-        configurations[utilisateur.role].visite,
+      type: configuration.visite,
 
       magasin: magasin,
 
@@ -872,28 +796,25 @@
       statut:
         document.getElementById("statut").value,
 
-      tauxConformite: taux,
+      tauxConformite:
+        calculerConformite(),
 
       informations:
         document.getElementById("informations").value,
 
-      evaluations: recupererEvaluations(),
+      action:
+        document.getElementById("action1").value,
 
-      actions: [
-        {
-          action:
-            document.getElementById("action1").value,
+      responsableAction:
+        document.getElementById("responsableAction1").value,
 
-          responsable:
-            document.getElementById("responsableAction1").value,
+      echeance:
+        document.getElementById("echeance1").value,
 
-          echeance:
-            document.getElementById("echeance1").value,
+      statutAction:
+        document.getElementById("statutAction1").value,
 
-          statut:
-            document.getElementById("statutAction1").value
-        }
-      ],
+      evaluations: evaluations,
 
       dateEnregistrement:
         new Date().toISOString()
@@ -914,11 +835,6 @@
 
     document.getElementById("visiteForm").reset();
 
-    document.getElementById("informations").value = "";
-    document.getElementById("action1").value = "";
-    document.getElementById("responsableAction1").value = "";
-    document.getElementById("echeance1").value = "";
-
     document.getElementById("rubriquesVisite").innerHTML =
       "";
 
@@ -927,8 +843,6 @@
 
     retourDashboard();
   }
-
-  /* ACTUALISATION DU TABLEAU DE BORD */
 
   function actualiserDashboard() {
     const visites = JSON.parse(
@@ -975,11 +889,8 @@
       document.getElementById("listeVisites");
 
     if (visitesRole.length === 0) {
-      liste.innerHTML = `
-        <p class="aucune">
-          Aucune visite enregistrée.
-        </p>
-      `;
+      liste.innerHTML =
+        "Aucune visite enregistrée.";
 
       return;
     }
@@ -993,33 +904,19 @@
       })
       .slice(0, 10)
       .forEach(function(visite) {
-
         liste.innerHTML += `
           <div class="visite-liste">
-
             <strong>${visite.type}</strong><br>
-
-            <b>Magasin :</b>
-            ${visite.magasin}<br>
-
-            <b>Date :</b>
-            ${visite.date}<br>
-
-            <b>Visiteur :</b>
-            ${visite.visiteur}<br>
-
-            <b>Statut :</b>
-            ${visite.statut}<br>
-
+            <b>Magasin :</b> ${visite.magasin}<br>
+            <b>Date :</b> ${visite.date}<br>
+            <b>Visiteur :</b> ${visite.visiteur}<br>
+            <b>Statut :</b> ${visite.statut}<br>
             <b>Conformité :</b>
             ${visite.tauxConformite} %
-
           </div>
         `;
       });
   }
-
-  /* DÉCONNEXION */
 
   function deconnexion() {
     localStorage.removeItem(
@@ -1030,7 +927,6 @@
   }
 
   actualiserDashboard();
-
 </script>
 
 </body>
