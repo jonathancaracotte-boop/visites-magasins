@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visite ROV - Suivi magasin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #1f2937;
+    }
+
+    header {
+      background: #1d4ed8;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
+
+    h1, h2 {
+      margin-top: 0;
+    }
+
+    h2 {
+      color: #1d4ed8;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .controle {
+      display: grid;
+      grid-template-columns: 2fr 180px 3fr;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .controle:last-child {
+      border-bottom: none;
+    }
+
+    button {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 6px;
+      background: #1d4ed8;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    button:hover {
+      background: #1e40af;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+    }
+
+    .btn-secondary {
+      background: #6b7280;
+    }
+
+    .resultat {
+      background: #eff6ff;
+      border: 1px solid #93c5fd;
+      padding: 18px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    @media (max-width: 700px) {
+      .controle {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Suivi des visites magasin</h1>
+  <p>Visite ROV – Tournée vente</p>
+</header>
+
+<main>
+
+  <form id="visiteForm">
+
+    <section class="card">
+      <h2>Informations générales</h2>
+
+      <div class="grid">
+        <div>
+          <label for="magasin">Magasin</label>
+          <select id="magasin" required>
+            <option value="">Sélectionner un magasin</option>
+            <option>CHERBOURG</option>
+            <option>VICHY</option>
+            <option>CAEN</option>
+            <option>ROUEN</option>
+            <option>LE HAVRE</option>
+            <option>EVREUX</option>
+            <option>ALENÇON</option>
+            <option>AMIENS</option>
+            <option>AUTRE MAGASIN</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="date">Date de visite</label>
+          <input type="date" id="date" required>
+        </div>
+
+        <div>
+          <label for="responsable">Responsable de magasin</label>
+          <input type="text" id="responsable" placeholder="Nom du responsable">
+        </div>
+
+        <div>
+          <label for="visiteur">Visiteur</label>
+          <input type="text" id="visiteur" placeholder="Nom du visiteur">
+        </div>
+
+        <div>
+          <label for="statut">Statut</label>
+          <select id="statut">
+            <option>À planifier</option>
+            <option>En cours</option>
+            <option>Terminée</option>
+            <option>À corriger</option>
+            <option>Validée</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Nos priorités</h2>
+      <div id="priorites"></div>
+    </section>
+
+    <section class="card">
+      <h2>Compétences</h2>
+      <div id="competences"></div>
+    </section>
+
+    <section class="card">
+      <h2>Rituels et indicateurs</h2>
+      <div id="rituels"></div>
+    </section>
+
+    <section class="card">
+      <h2>Magasin et sécurité</h2>
+      <div id="securite"></div>
+    </section>
+
+    <section class="card">
+      <h2>Documents et conformité</h2>
+      <div id="documents"></div>
+    </section>
+
+    <section class="card">
+      <h2>Informations diverses</h2>
+      <textarea id="informations" placeholder="Recrutement, organisation, remarques diverses..."></textarea>
+    </section>
+
+    <section class="card">
+      <h2>Engagements et actions prioritaires</h2>
+
+      <div class="grid">
+        <div>
+          <label>Action 1</label>
+          <input type="text" id="action1">
+        </div>
+
+        <div>
+          <label>Responsable</label>
+          <input type="text" id="responsableAction1">
+        </div>
+
+        <div>
+          <label>Échéance</label>
+          <input type="date" id="echeance1">
+        </div>
+
+        <div>
+          <label>Statut</label>
+          <select id="statutAction1">
+            <option>À planifier</option>
+            <option>En cours</option>
+            <option>Terminée</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Action 2</label>
+          <input type="text" id="action2">
+        </div>
+
+        <div>
+          <label>Responsable</label>
+          <input type="text" id="responsableAction2">
+        </div>
+
+        <div>
+          <label>Échéance</label>
+          <input type="date" id="echeance2">
+        </div>
+
+        <div>
+          <label>Statut</label>
+          <select id="statutAction2">
+            <option>À planifier</option>
+            <option>En cours</option>
+            <option>Terminée</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Action 3</label>
+          <input type="text" id="action3">
+        </div>
+
+        <div>
+          <label>Responsable</label>
+          <input type="text" id="responsableAction3">
+        </div>
+
+        <div>
+          <label>Échéance</label>
+          <input type="date" id="echeance3">
+        </div>
+
+        <div>
+          <label>Statut</label>
+          <select id="statutAction3">
+            <option>À planifier</option>
+            <option>En cours</option>
+            <option>Terminée</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="resultat">
+        Taux de conformité :
+        <span id="tauxConformite">0 %</span>
+      </div>
+
+      <div class="actions">
+        <button type="button" onclick="calculerConformite()">
+          Calculer la conformité
+        </button>
+
+        <button type="submit">
+          Enregistrer la visite
+        </button>
+
+        <button type="button" class="btn-secondary" onclick="window.print()">
+          Imprimer / PDF
+        </button>
+
+        <button type="button" class="btn-danger" onclick="deconnexion()">
+          Se déconnecter
+        </button>
+      </div>
+    </section>
+
+  </form>
+
+</main>
+
+<script>
+  const rubriques = {
+    priorites: [
+      "PEC",
+      "Lead J1 / J3",
+      "Produits BESTS",
+      "CA Carrelage",
+      "Avis Google",
+      "CA Commerce",
+      "CA Pose",
+      "Poids de chantier",
+      "Transformation",
+      "Concrétisation des devis",
+      "Dette",
+      "Marge",
+      "GAG"
+    ],
+
+    competences: [
+      "Maîtrise de la vente – RM / ARM",
+      "Maîtrise de la vente – Vendeurs",
+      "Budget demandé à chaque client",
+      "Dossiers complets dans POS",
+      "Prochain rendez-vous notifié",
+      "Commentaires sur chaque devis",
+      "Maîtrise du CRM",
+      "État général du CRM"
+    ],
+
+    rituels: [
+      "Brief quotidien",
+      "Réunion hebdomadaire",
+      "Réunion mensuelle équipe complète",
+      "Animation CRM hebdomadaire",
+      "Feuille de route mensuelle"
+    ],
+
+    securite: [
+      "Extérieur du magasin",
+      "Tenue du magasin",
+      "Tenue Saint Maclou",
+      "Zone de mise en avant opérationnelle",
+      "Portes de secours dégagées",
+      "Affichages prix",
+      "Extincteurs accessibles",
+      "Affichage promotionnel",
+      "Respect des CGV",
+      "Paiement",
+      "EPI"
+    ],
+
+    documents: [
+      "Commandes marchandises seules",
+      "Commandes chantier",
+      "Signature des BDC",
+      "Signature des BL",
+      "Contrôle des références",
+      "Suivi des remises et avoirs"
+    ]
+  };
+
+  function afficherRubrique(id, elements) {
+    const conteneur = document.getElementById(id);
+
+    elements.forEach((element, index) => {
+      conteneur.innerHTML += `
+        <div class="controle">
+          <strong>${element}</strong>
+
+          <select class="evaluation">
+            <option value="">Évaluer</option>
+            <option value="OK">OK</option>
+            <option value="PARTIEL">Partiel</option>
+            <option value="NON">Non conforme</option>
+            <option value="NE">Non évalué</option>
+          </select>
+
+          <input
+            type="text"
+            placeholder="Commentaire"
+            class="commentaire"
+          >
+        </div>
+      `;
+    });
+  }
+
+  afficherRubrique("priorites", rubriques.priorites);
+  afficherRubrique("competences", rubriques.competences);
+  afficherRubrique("rituels", rubriques.rituels);
+  afficherRubrique("securite", rubriques.securite);
+  afficherRubrique("documents", rubriques.documents);
+
+  function calculerConformite() {
+    const evaluations = document.querySelectorAll(".evaluation");
+    let total = 0;
+    let conformes = 0;
+
+    evaluations.forEach(evaluation => {
+      if (
+        evaluation.value === "OK" ||
+        evaluation.value === "PARTIEL" ||
+        evaluation.value === "NON"
+      ) {
+        total++;
+      }
+
+      if (evaluation.value === "OK") {
+        conformes++;
+      }
+    });
+
+    const taux = total === 0 ? 0 : Math.round((conformes / total) * 100);
+    document.getElementById("tauxConformite").textContent = taux + " %";
+  }
+
+  document.querySelectorAll(".evaluation").forEach(select => {
+    select.addEventListener("change", calculerConformite);
+  });
+
+  document.getElementById("visiteForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    calculerConformite();
+
+    const visite = {
+      magasin: document.getElementById("magasin").value,
+      date: document.getElementById("date").value,
+      responsable: document.getElementById("responsable").value,
+      visiteur: document.getElementById("visiteur").value,
+      statut: document.getElementById("statut").value,
+      tauxConformite: document.getElementById("tauxConformite").textContent,
+      informations: document.getElementById("informations").value,
+      dateEnregistrement: new Date().toISOString()
+    };
+
+    localStorage.setItem("derniereVisiteROV", JSON.stringify(visite));
+
+    alert("La visite ROV a été enregistrée avec succès.");
+  });
+
+  function deconnexion() {
+    window.location.href = "index.html";
+  }
+</script>
+
+</body>
+</html>
