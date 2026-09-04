@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Suivi des visites magasin</title>
+  <title>Connexion - Suivi des visites</title>
 
   <style>
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -14,48 +16,53 @@
     }
 
     .container {
-      max-width: 500px;
+      max-width: 460px;
       margin: 80px auto;
       padding: 30px;
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.1);
       text-align: center;
     }
 
-    h1 {
-      color: #1d4ed8;
-      margin-bottom: 10px;
-    }
+    h1 { color: #1d4ed8; }
 
     p {
       color: #6b7280;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 13px;
+      margin: 8px 0;
+      border-radius: 7px;
+      font-size: 16px;
     }
 
     input {
-      width: 90%;
-      padding: 12px;
-      margin: 8px 0;
       border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 16px;
     }
 
     button {
-      width: 95%;
-      padding: 12px;
-      margin-top: 15px;
+      border: none;
       background: #1d4ed8;
       color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
       cursor: pointer;
+      font-weight: bold;
     }
 
     button:hover {
       background: #1e40af;
+    }
+
+    .demo {
+      margin-top: 20px;
+      padding: 12px;
+      background: #eff6ff;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -63,7 +70,7 @@
 <body>
   <div class="container">
     <h1>Suivi des visites magasin</h1>
-    <p>Connectez-vous pour accéder à votre espace.</p>
+    <p>Connectez-vous à votre espace métier.</p>
 
     <form id="loginForm">
       <input
@@ -82,20 +89,60 @@
 
       <button type="submit">Se connecter</button>
     </form>
+
+    <div class="demo">
+      <strong>Identifiants de test :</strong><br><br>
+      DR : dr@test.com / 1234<br>
+      ROV : rov@test.com / 1234<br>
+      RSR : rsr@test.com / 1234<br>
+      RRH : rrh@test.com / 1234
+    </div>
   </div>
 
   <script>
+    const utilisateurs = {
+      "dr@test.com": {
+        motDePasse: "1234",
+        nom: "Directeur Régional",
+        role: "DR"
+      },
+      "rov@test.com": {
+        motDePasse: "1234",
+        nom: "Responsable Opérationnel Vente",
+        role: "ROV"
+      },
+      "rsr@test.com": {
+        motDePasse: "1234",
+        nom: "Responsable Service et Pose",
+        role: "RSR"
+      },
+      "rrh@test.com": {
+        motDePasse: "1234",
+        nom: "Responsable Ressources Humaines",
+        role: "RRH"
+      }
+    };
+
     document.getElementById("loginForm").addEventListener("submit", function(event) {
       event.preventDefault();
 
-      const email = document.getElementById("email").value;
+      const email = document.getElementById("email").value.trim().toLowerCase();
       const password = document.getElementById("password").value;
 
-      if (email === "admin@test.com" && password === "1234") {
-        window.location.href = "dashboard.html";
-      } else {
+      const utilisateur = utilisateurs[email];
+
+      if (!utilisateur || utilisateur.motDePasse !== password) {
         alert("Adresse e-mail ou mot de passe incorrect.");
+        return;
       }
+
+      localStorage.setItem("utilisateurConnecte", JSON.stringify({
+        email: email,
+        nom: utilisateur.nom,
+        role: utilisateur.role
+      }));
+
+      window.location.href = "dashboard.html";
     });
   </script>
 </body>
