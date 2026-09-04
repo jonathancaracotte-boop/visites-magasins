@@ -1,12 +1,18 @@
+Creating a functional dashboard
+
+I need to determine if we should provide a full index and dashboard, considering the user's previous inquiry. There was an issue with the prior code being corrupted or truncated, so I have to make sure to create two complete functional files and integrate the stores. I should infer fields and possibly include a visits checklist. I’ll keep the scripts concise, but the code will be long, ensuring there are no typos. Mobile-friendly features are also essential.Voici les deux fichiers complets à copier-coller.
+index.html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion - Suivi des visites</title>
+  <title>Connexion - Suivi des visites magasin</title>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -16,61 +22,64 @@
     }
 
     .container {
-      max-width: 460px;
+      width: 90%;
+      max-width: 450px;
       margin: 80px auto;
       padding: 30px;
-      background: white;
+      background: #ffffff;
       border-radius: 14px;
-      box-shadow: 0 4px 18px rgba(0,0,0,.1);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
       text-align: center;
     }
 
-    h1 { color: #1d4ed8; }
+    h1 {
+      margin-bottom: 10px;
+      color: #2453d4;
+    }
 
     p {
       color: #6b7280;
       margin-bottom: 25px;
     }
 
-    input, button {
+    input,
+    button {
       width: 100%;
-      padding: 13px;
-      margin: 8px 0;
+      padding: 14px;
+      margin-top: 12px;
       border-radius: 7px;
       font-size: 16px;
     }
 
     input {
-      border: 1px solid #d1d5db;
+      border: 1px solid #cbd5e1;
     }
 
     button {
       border: none;
-      background: #1d4ed8;
+      background: #2453d4;
       color: white;
-      cursor: pointer;
       font-weight: bold;
+      cursor: pointer;
     }
 
     button:hover {
-      background: #1e40af;
+      background: #193fa8;
     }
 
-    .demo {
-      margin-top: 20px;
-      padding: 12px;
-      background: #eff6ff;
-      border-radius: 8px;
-      text-align: left;
-      font-size: 14px;
+    .message {
+      margin-top: 15px;
+      color: #dc2626;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
+
+  <main class="container">
     <h1>Suivi des visites magasin</h1>
-    <p>Connectez-vous à votre espace métier.</p>
+    <p>Connectez-vous à votre espace</p>
 
     <form id="loginForm">
       <input
@@ -90,60 +99,68 @@
       <button type="submit">Se connecter</button>
     </form>
 
-    <div class="demo">
-      <strong>Identifiants de test :</strong><br><br>
-      DR : dr@test.com / 1234<br>
-      ROV : rov@test.com / 1234<br>
-      RSR : rsr@test.com / 1234<br>
-      RRH : rrh@test.com / 1234
-    </div>
-  </div>
+    <div id="message" class="message"></div>
+  </main>
 
   <script>
     const utilisateurs = {
       "dr@test.com": {
         motDePasse: "1234",
-        nom: "Directeur Régional",
-        role: "DR"
+        role: "DR",
+        nom: "Direction Régionale"
       },
       "rov@test.com": {
         motDePasse: "1234",
-        nom: "Responsable Opérationnel Vente",
-        role: "ROV"
+        role: "ROV",
+        nom: "Responsable Opérationnel Vente"
       },
       "rsr@test.com": {
         motDePasse: "1234",
-        nom: "Responsable Service et Pose",
-        role: "RSR"
+        role: "RSR",
+        nom: "Responsable Service et Pose"
       },
       "rrh@test.com": {
         motDePasse: "1234",
-        nom: "Responsable Ressources Humaines",
-        role: "RRH"
+        role: "RRH",
+        nom: "Responsable Ressources Humaines"
       }
     };
 
-    document.getElementById("loginForm").addEventListener("submit", function(event) {
-      event.preventDefault();
+    document
+      .getElementById("loginForm")
+      .addEventListener("submit", function(event) {
+        event.preventDefault();
 
-      const email = document.getElementById("email").value.trim().toLowerCase();
-      const password = document.getElementById("password").value;
+        const email = document
+          .getElementById("email")
+          .value
+          .trim()
+          .toLowerCase();
 
-      const utilisateur = utilisateurs[email];
+        const password = document
+          .getElementById("password")
+          .value;
 
-      if (!utilisateur || utilisateur.motDePasse !== password) {
-        alert("Adresse e-mail ou mot de passe incorrect.");
-        return;
-      }
+        const message = document.getElementById("message");
+        const utilisateur = utilisateurs[email];
 
-      localStorage.setItem("utilisateurConnecte", JSON.stringify({
-        email: email,
-        nom: utilisateur.nom,
-        role: utilisateur.role
-      }));
+        if (!utilisateur || utilisateur.motDePasse !== password) {
+          message.textContent = "Adresse e-mail ou mot de passe incorrect.";
+          return;
+        }
 
-      window.location.href = "dashboard.html";
-    });
+        localStorage.setItem(
+          "utilisateurConnecte",
+          JSON.stringify({
+            email: email,
+            nom: utilisateur.nom,
+            role: utilisateur.role
+          })
+        );
+
+        window.location.href = "dashboard.html";
+      });
   </script>
+
 </body>
 </html>
