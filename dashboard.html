@@ -233,6 +233,27 @@
       color: #6b7280;
     }
 
+    .message {
+      padding: 12px;
+      border-radius: 7px;
+      margin-top: 10px;
+      display: none;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .message-succes {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .message-erreur {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
     @media (max-width: 700px) {
       header .top {
         flex-direction: column;
@@ -348,7 +369,6 @@
 
           <div>
             <label for="statut">Statut</label>
-
             <select id="statut">
               <option>À planifier</option>
               <option>En cours</option>
@@ -396,7 +416,6 @@
 
         <div>
           <label for="statutAction1">Statut</label>
-
           <select id="statutAction1">
             <option>À planifier</option>
             <option>En cours</option>
@@ -413,6 +432,8 @@
         Taux de conformité :
         <span id="tauxConformite">0 %</span>
       </div>
+
+      <div id="message" class="message"></div>
 
       <div class="actions">
 
@@ -453,6 +474,14 @@
 </main>
 
 <script>
+
+  /*
+   * COLLE ICI L'URL DE TON WEB APP GOOGLE APPS SCRIPT
+   */
+  const URL_GOOGLE_SHEETS =
+    "COLLE_ICI_TON_URL_GOOGLE_APPS_SCRIPT";
+
+
   const utilisateur = JSON.parse(
     localStorage.getItem("utilisateurConnecte")
   );
@@ -460,6 +489,7 @@
   if (!utilisateur) {
     window.location.href = "index.html";
   }
+
 
   const magasins = [
     ["005", "CHERBOURG"],
@@ -488,7 +518,9 @@
     ["237", "ORLEANS"]
   ];
 
+
   const configurations = {
+
     DR: {
       titre: "Tableau de bord global - Direction Régionale",
       visite: "Visite DR - Visite globale",
@@ -500,17 +532,20 @@
           "Affichage et communication",
           "Zone de mise en avant"
         ],
+
         "Process": [
           "Respect des procédures internes",
           "Suivi des indicateurs",
           "Organisation des rituels",
           "Qualité du reporting"
         ],
+
         "Dette magasin": [
           "Suivi de la dette",
           "Actions engagées",
           "Respect des échéances"
         ],
+
         "Qualité": [
           "Qualité de l'accueil",
           "Qualité de la vente",
@@ -538,6 +573,7 @@
           "Marge",
           "GAG"
         ],
+
         "Compétences commerciales": [
           "Maîtrise de la vente - RM / ARM",
           "Maîtrise de la vente - Vendeurs",
@@ -547,12 +583,14 @@
           "Commentaires sur chaque devis",
           "Maîtrise du CRM"
         ],
+
         "Rituels": [
           "Brief quotidien",
           "Réunion hebdomadaire",
           "Animation CRM hebdomadaire",
           "Feuille de route mensuelle"
         ],
+
         "Sécurité et conformité": [
           "Tenue du magasin",
           "Affichage des prix",
@@ -575,18 +613,21 @@
           "Respect des délais",
           "Réception des chantiers"
         ],
+
         "Service client": [
           "Traitement des réclamations",
           "Suivi des réserves",
           "Relance des clients",
           "Satisfaction client"
         ],
+
         "Process": [
           "Dossiers chantiers complets",
           "Signature des documents",
           "Contrôle des références",
           "Suivi des remises et avoirs"
         ],
+
         "Sécurité": [
           "Port des EPI",
           "Sécurité des zones de travail",
@@ -606,18 +647,21 @@
           "Intégration des nouveaux collaborateurs",
           "Suivi des absences"
         ],
+
         "Management": [
           "Entretiens réalisés",
           "Points individuels réalisés",
           "Suivi des compétences",
           "Plan de développement"
         ],
+
         "Organisation": [
           "Planning à jour",
           "Rituels managériaux",
           "Communication interne",
           "Climat social"
         ],
+
         "Sécurité et conformité RH": [
           "Affichages obligatoires",
           "Documents collaborateurs",
@@ -626,16 +670,33 @@
         ]
       }
     }
+
   };
+
 
   const configuration =
     configurations[utilisateur.role] || configurations.DR;
+
 
   document.getElementById("utilisateurConnecte").textContent =
     utilisateur.nom + " - " + utilisateur.role;
 
   document.getElementById("titreDashboard").textContent =
     configuration.titre;
+
+
+  function afficherMessage(texte, type) {
+    const message = document.getElementById("message");
+
+    message.textContent = texte;
+    message.className = "message message-" + type;
+
+    setTimeout(function() {
+      message.className = "message";
+      message.textContent = "";
+    }, 5000);
+  }
+
 
   function chargerMagasins() {
     const select = document.getElementById("magasin");
@@ -652,6 +713,7 @@
       select.appendChild(option);
     });
   }
+
 
   function appliquerCouleurEvaluation(select) {
     select.classList.remove(
@@ -678,19 +740,24 @@
     }
   }
 
+
   function obtenirClasseBadge(evaluation) {
     if (evaluation === "OK") return "badge-ok";
     if (evaluation === "PARTIEL") return "badge-partiel";
     if (evaluation === "NON") return "badge-non";
+
     return "badge-ne";
   }
+
 
   function obtenirLibelleEvaluation(evaluation) {
     if (evaluation === "OK") return "OK";
     if (evaluation === "PARTIEL") return "Partiel";
     if (evaluation === "NON") return "Non conforme";
+
     return "Non évalué";
   }
+
 
   function afficherRubriques() {
     const zone = document.getElementById("rubriquesVisite");
@@ -699,12 +766,14 @@
 
     Object.entries(configuration.rubriques).forEach(
       function([nom, controles]) {
+
         const section = document.createElement("div");
 
         section.className = "card";
         section.innerHTML = `<h2>${nom}</h2>`;
 
         controles.forEach(function(controle) {
+
           section.innerHTML += `
             <div class="controle">
               <strong>${controle}</strong>
@@ -731,12 +800,15 @@
     );
 
     document.querySelectorAll(".evaluation").forEach(function(select) {
+
       select.addEventListener("change", function() {
         appliquerCouleurEvaluation(select);
         calculerConformite();
       });
+
     });
   }
+
 
   function afficherPageVisite() {
     document.getElementById("pageDashboard").style.display = "none";
@@ -760,6 +832,7 @@
     });
   }
 
+
   function retourDashboard() {
     document.getElementById("pageVisite").style.display = "none";
     document.getElementById("pageDashboard").style.display = "block";
@@ -772,6 +845,7 @@
     });
   }
 
+
   function calculerConformite() {
     const evaluations =
       document.querySelectorAll(".evaluation");
@@ -780,6 +854,7 @@
     let conformes = 0;
 
     evaluations.forEach(function(evaluation) {
+
       if (
         evaluation.value === "OK" ||
         evaluation.value === "PARTIEL" ||
@@ -803,7 +878,8 @@
     return taux;
   }
 
-  function enregistrerVisite() {
+
+  async function enregistrerVisite() {
     const magasin =
       document.getElementById("magasin").value;
 
@@ -818,36 +894,69 @@
     const evaluations = [];
 
     document.querySelectorAll(".controle").forEach(function(controle) {
-      const evaluation =
-        controle.querySelector(".evaluation").value;
 
       evaluations.push({
-        intitule: controle.querySelector("strong").textContent,
-        evaluation: evaluation,
-        commentaire: controle.querySelector(".commentaire").value
+        intitule:
+          controle.querySelector("strong").textContent,
+
+        evaluation:
+          controle.querySelector(".evaluation").value,
+
+        commentaire:
+          controle.querySelector(".commentaire").value
       });
+
     });
 
     const visite = {
       id: Date.now(),
+
       role: utilisateur.role,
-      visiteur: document.getElementById("visiteur").value,
-      type: configuration.visite,
+
+      visiteur:
+        document.getElementById("visiteur").value,
+
+      type:
+        configuration.visite,
+
       magasin: magasin,
+
       date: date,
-      responsable: document.getElementById("responsable").value,
-      statut: document.getElementById("statut").value,
-      tauxConformite: calculerConformite(),
-      informations: document.getElementById("informations").value,
-      action: document.getElementById("action1").value,
+
+      responsable:
+        document.getElementById("responsable").value,
+
+      statut:
+        document.getElementById("statut").value,
+
+      tauxConformite:
+        calculerConformite(),
+
+      informations:
+        document.getElementById("informations").value,
+
+      action:
+        document.getElementById("action1").value,
+
       responsableAction:
         document.getElementById("responsableAction1").value,
-      echeance: document.getElementById("echeance1").value,
-      statutAction: document.getElementById("statutAction1").value,
+
+      echeance:
+        document.getElementById("echeance1").value,
+
+      statutAction:
+        document.getElementById("statutAction1").value,
+
       evaluations: evaluations,
-      dateEnregistrement: new Date().toISOString()
+
+      dateEnregistrement:
+        new Date().toISOString()
     };
 
+
+    /*
+     * Enregistrement local
+     */
     const visites = JSON.parse(
       localStorage.getItem("visites") || "[]"
     );
@@ -859,14 +968,63 @@
       JSON.stringify(visites)
     );
 
-    alert("La visite a été enregistrée avec succès.");
+
+    /*
+     * Enregistrement Google Sheets
+     */
+    if (
+      URL_GOOGLE_SHEETS &&
+      !URL_GOOGLE_SHEETS.includes("COLLE_ICI")
+    ) {
+      try {
+
+        await fetch(URL_GOOGLE_SHEETS, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify(visite)
+        });
+
+        afficherMessage(
+          "La visite a été enregistrée dans Google Sheets.",
+          "succes"
+        );
+
+      } catch (erreur) {
+
+        console.error(
+          "Erreur Google Sheets :",
+          erreur
+        );
+
+        afficherMessage(
+          "La visite est enregistrée localement, mais l'envoi Google Sheets a échoué.",
+          "erreur"
+        );
+      }
+
+    } else {
+      afficherMessage(
+        "La visite a été enregistrée localement. URL Google Sheets non configurée.",
+        "erreur"
+      );
+    }
+
 
     document.getElementById("visiteForm").reset();
-    document.getElementById("rubriquesVisite").innerHTML = "";
-    document.getElementById("tauxConformite").textContent = "0 %";
 
-    retourDashboard();
+    document.getElementById("rubriquesVisite").innerHTML = "";
+
+    document.getElementById("tauxConformite").textContent =
+      "0 %";
+
+    setTimeout(function() {
+      retourDashboard();
+    }, 1200);
   }
+
 
   function actualiserDashboard() {
     const visites = JSON.parse(
@@ -879,22 +1037,28 @@
           return visite.role === utilisateur.role;
         });
 
+
     const terminees = visitesRole.filter(function(visite) {
       return visite.statut === "Terminée" ||
              visite.statut === "Validée";
     });
 
+
     const anomalies = visitesRole.filter(function(visite) {
       return visite.statut === "À corriger";
     });
+
 
     const moyenne = visitesRole.length === 0
       ? 0
       : Math.round(
           visitesRole.reduce(function(total, visite) {
-            return total + Number(visite.tauxConformite || 0);
+            return total + Number(
+              visite.tauxConformite || 0
+            );
           }, 0) / visitesRole.length
         );
+
 
     document.getElementById("nombreVisites").textContent =
       visitesRole.length;
@@ -908,15 +1072,19 @@
     document.getElementById("tauxGlobal").textContent =
       moyenne + " %";
 
+
     const liste =
       document.getElementById("listeVisites");
 
     if (visitesRole.length === 0) {
-      liste.innerHTML = "Aucune visite enregistrée.";
+      liste.innerHTML =
+        '<span class="aucune">Aucune visite enregistrée.</span>';
+
       return;
     }
 
     liste.innerHTML = "";
+
 
     visitesRole
       .slice()
@@ -929,11 +1097,13 @@
         let detailsEvaluations = "";
 
         if (visite.evaluations) {
+
           detailsEvaluations = visite.evaluations
             .filter(function(item) {
               return item.evaluation;
             })
             .map(function(item) {
+
               return `
                 <div>
                   ${item.intitule} :
@@ -946,14 +1116,25 @@
             .join("");
         }
 
+
         liste.innerHTML += `
           <div class="visite-liste">
             <strong>${visite.type}</strong><br>
-            <b>Magasin :</b> ${visite.magasin}<br>
-            <b>Date :</b> ${visite.date}<br>
-            <b>Visiteur :</b> ${visite.visiteur}<br>
-            <b>Statut :</b> ${visite.statut}<br>
-            <b>Conformité :</b> ${visite.tauxConformite} %
+
+            <b>Magasin :</b>
+            ${visite.magasin}<br>
+
+            <b>Date :</b>
+            ${visite.date}<br>
+
+            <b>Visiteur :</b>
+            ${visite.visiteur}<br>
+
+            <b>Statut :</b>
+            ${visite.statut}<br>
+
+            <b>Conformité :</b>
+            ${visite.tauxConformite} %
 
             ${
               detailsEvaluations
@@ -965,12 +1146,15 @@
       });
   }
 
+
   function deconnexion() {
     localStorage.removeItem("utilisateurConnecte");
     window.location.href = "index.html";
   }
 
+
   actualiserDashboard();
+
 </script>
 
 </body>
