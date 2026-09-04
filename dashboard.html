@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de bord</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #1f2937;
+    }
+
+    header {
+      background: #1d4ed8;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h2 {
+      color: #1d4ed8;
+      margin-top: 0;
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 12px 20px;
+      background: #dc2626;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Tableau de bord</h1>
+    <p>Suivi des visites magasin</p>
+  </header>
+
+  <main>
+    <div class="cards">
+      <div class="card">
+        <h2>Visites</h2>
+        <p>Aucune visite enregistrée.</p>
+      </div>
+
+      <div class="card">
+        <h2>Équipe</h2>
+        <p>Gestion des collaborateurs.</p>
+      </div>
+
+      <div class="card">
+        <h2>Statistiques</h2>
+        <p>Les indicateurs apparaîtront ici.</p>
+      </div>
+    </div>
+
+    <button onclick="window.location.href='index.html'">
+      Se déconnecter
+    </button>
+  </main>
+</body>
+</html>
