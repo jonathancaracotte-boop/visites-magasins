@@ -1,3 +1,12 @@
+Considering code modifications
+
+I’m thinking about leveraging the pasted code to make some modifications instead of rewriting everything from scratch. The user has explicitly asked for a rewrite, but I also want to provide a complete but compact configuration. Finding the right balance of clarity and conciseness is key here! I should focus on fitting the user's needs while keeping the modifications effective and understandable. I’ll make sure it aligns well with what they’re looking for!Voici ton dashboard.html réécrit avec les couleurs automatiques pour les statuts :
+
+OK : vert ;
+Partiel : orange ;
+Non conforme : rouge ;
+Non évalué : gris.
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -92,7 +101,7 @@
     }
 
     button:hover {
-      background: #1e40af;
+      opacity: .9;
     }
 
     .secondary {
@@ -141,6 +150,35 @@
       border-bottom: none;
     }
 
+    .evaluation {
+      font-weight: bold;
+      transition: .2s;
+    }
+
+    .evaluation-ok {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #22c55e;
+    }
+
+    .evaluation-partiel {
+      background: #ffedd5;
+      color: #9a3412;
+      border-color: #f97316;
+    }
+
+    .evaluation-non {
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #ef4444;
+    }
+
+    .evaluation-ne {
+      background: #e5e7eb;
+      color: #374151;
+      border-color: #9ca3af;
+    }
+
     .resultat {
       background: #eff6ff;
       border: 1px solid #93c5fd;
@@ -170,6 +208,34 @@
       border-left: 4px solid #1d4ed8;
       border-radius: 5px;
       line-height: 1.6;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .badge-ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-partiel {
+      background: #ffedd5;
+      color: #9a3412;
+    }
+
+    .badge-non {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-ne {
+      background: #e5e7eb;
+      color: #374151;
     }
 
     .aucune {
@@ -205,8 +271,6 @@
 </header>
 
 <main>
-
-  <!-- TABLEAU DE BORD -->
 
   <section id="pageDashboard">
 
@@ -262,8 +326,6 @@
 
   </section>
 
-  <!-- PAGE DE CRÉATION D'UNE VISITE -->
-
   <section id="pageVisite">
 
     <div class="card">
@@ -284,25 +346,13 @@
           </div>
 
           <div>
-            <label for="responsable">
-              Responsable de magasin
-            </label>
-
-            <input
-              type="text"
-              id="responsable"
-              placeholder="Nom du responsable"
-            >
+            <label for="responsable">Responsable de magasin</label>
+            <input type="text" id="responsable">
           </div>
 
           <div>
             <label for="visiteur">Visiteur</label>
-
-            <input
-              type="text"
-              id="visiteur"
-              placeholder="Nom du visiteur"
-            >
+            <input type="text" id="visiteur">
           </div>
 
           <div>
@@ -375,10 +425,7 @@
 
       <div class="actions">
 
-        <button
-          type="button"
-          onclick="calculerConformite()"
-        >
+        <button type="button" onclick="calculerConformite()">
           Calculer la conformité
         </button>
 
@@ -462,20 +509,17 @@
           "Affichage et communication",
           "Zone de mise en avant"
         ],
-
         "Process": [
           "Respect des procédures internes",
           "Suivi des indicateurs",
           "Organisation des rituels",
           "Qualité du reporting"
         ],
-
         "Dette magasin": [
           "Suivi de la dette",
           "Actions engagées",
           "Respect des échéances"
         ],
-
         "Qualité": [
           "Qualité de l'accueil",
           "Qualité de la vente",
@@ -503,7 +547,6 @@
           "Marge",
           "GAG"
         ],
-
         "Compétences commerciales": [
           "Maîtrise de la vente - RM / ARM",
           "Maîtrise de la vente - Vendeurs",
@@ -513,14 +556,12 @@
           "Commentaires sur chaque devis",
           "Maîtrise du CRM"
         ],
-
         "Rituels": [
           "Brief quotidien",
           "Réunion hebdomadaire",
           "Animation CRM hebdomadaire",
           "Feuille de route mensuelle"
         ],
-
         "Sécurité et conformité": [
           "Tenue du magasin",
           "Affichage des prix",
@@ -543,21 +584,18 @@
           "Respect des délais",
           "Réception des chantiers"
         ],
-
         "Service client": [
           "Traitement des réclamations",
           "Suivi des réserves",
           "Relance des clients",
           "Satisfaction client"
         ],
-
         "Process": [
           "Dossiers chantiers complets",
           "Signature des documents",
           "Contrôle des références",
           "Suivi des remises et avoirs"
         ],
-
         "Sécurité": [
           "Port des EPI",
           "Sécurité des zones de travail",
@@ -577,21 +615,18 @@
           "Intégration des nouveaux collaborateurs",
           "Suivi des absences"
         ],
-
         "Management": [
           "Entretiens réalisés",
           "Points individuels réalisés",
           "Suivi des compétences",
           "Plan de développement"
         ],
-
         "Organisation": [
           "Planning à jour",
           "Rituels managériaux",
           "Communication interne",
           "Climat social"
         ],
-
         "Sécurité et conformité RH": [
           "Affichages obligatoires",
           "Documents collaborateurs",
@@ -627,6 +662,45 @@
     });
   }
 
+  function appliquerCouleurEvaluation(select) {
+    select.classList.remove(
+      "evaluation-ok",
+      "evaluation-partiel",
+      "evaluation-non",
+      "evaluation-ne"
+    );
+
+    if (select.value === "OK") {
+      select.classList.add("evaluation-ok");
+    }
+
+    if (select.value === "PARTIEL") {
+      select.classList.add("evaluation-partiel");
+    }
+
+    if (select.value === "NON") {
+      select.classList.add("evaluation-non");
+    }
+
+    if (select.value === "NE") {
+      select.classList.add("evaluation-ne");
+    }
+  }
+
+  function obtenirClasseBadge(evaluation) {
+    if (evaluation === "OK") return "badge-ok";
+    if (evaluation === "PARTIEL") return "badge-partiel";
+    if (evaluation === "NON") return "badge-non";
+    return "badge-ne";
+  }
+
+  function obtenirLibelleEvaluation(evaluation) {
+    if (evaluation === "OK") return "OK";
+    if (evaluation === "PARTIEL") return "Partiel";
+    if (evaluation === "NON") return "Non conforme";
+    return "Non évalué";
+  }
+
   function afficherRubriques() {
     const zone = document.getElementById("rubriquesVisite");
 
@@ -637,7 +711,6 @@
         const section = document.createElement("div");
 
         section.className = "card";
-
         section.innerHTML = `<h2>${nom}</h2>`;
 
         controles.forEach(function(controle) {
@@ -666,22 +739,17 @@
       }
     );
 
-    document.querySelectorAll(".evaluation").forEach(
-      function(select) {
-        select.addEventListener(
-          "change",
-          calculerConformite
-        );
-      }
-    );
+    document.querySelectorAll(".evaluation").forEach(function(select) {
+      select.addEventListener("change", function() {
+        appliquerCouleurEvaluation(select);
+        calculerConformite();
+      });
+    });
   }
 
   function afficherPageVisite() {
-    document.getElementById("pageDashboard").style.display =
-      "none";
-
-    document.getElementById("pageVisite").style.display =
-      "block";
+    document.getElementById("pageDashboard").style.display = "none";
+    document.getElementById("pageVisite").style.display = "block";
 
     document.getElementById("titreVisite").textContent =
       configuration.visite;
@@ -702,11 +770,8 @@
   }
 
   function retourDashboard() {
-    document.getElementById("pageVisite").style.display =
-      "none";
-
-    document.getElementById("pageDashboard").style.display =
-      "block";
+    document.getElementById("pageVisite").style.display = "none";
+    document.getElementById("pageDashboard").style.display = "block";
 
     actualiserDashboard();
 
@@ -761,63 +826,35 @@
 
     const evaluations = [];
 
-    document.querySelectorAll(".controle").forEach(
-      function(controle) {
-        evaluations.push({
-          intitule:
-            controle.querySelector("strong").textContent,
+    document.querySelectorAll(".controle").forEach(function(controle) {
+      const evaluation =
+        controle.querySelector(".evaluation").value;
 
-          evaluation:
-            controle.querySelector(".evaluation").value,
-
-          commentaire:
-            controle.querySelector(".commentaire").value
-        });
-      }
-    );
+      evaluations.push({
+        intitule: controle.querySelector("strong").textContent,
+        evaluation: evaluation,
+        commentaire: controle.querySelector(".commentaire").value
+      });
+    });
 
     const visite = {
       id: Date.now(),
-
       role: utilisateur.role,
-
-      visiteur:
-        document.getElementById("visiteur").value,
-
+      visiteur: document.getElementById("visiteur").value,
       type: configuration.visite,
-
       magasin: magasin,
-
       date: date,
-
-      responsable:
-        document.getElementById("responsable").value,
-
-      statut:
-        document.getElementById("statut").value,
-
-      tauxConformite:
-        calculerConformite(),
-
-      informations:
-        document.getElementById("informations").value,
-
-      action:
-        document.getElementById("action1").value,
-
+      responsable: document.getElementById("responsable").value,
+      statut: document.getElementById("statut").value,
+      tauxConformite: calculerConformite(),
+      informations: document.getElementById("informations").value,
+      action: document.getElementById("action1").value,
       responsableAction:
         document.getElementById("responsableAction1").value,
-
-      echeance:
-        document.getElementById("echeance1").value,
-
-      statutAction:
-        document.getElementById("statutAction1").value,
-
+      echeance: document.getElementById("echeance1").value,
+      statutAction: document.getElementById("statutAction1").value,
       evaluations: evaluations,
-
-      dateEnregistrement:
-        new Date().toISOString()
+      dateEnregistrement: new Date().toISOString()
     };
 
     const visites = JSON.parse(
@@ -834,12 +871,8 @@
     alert("La visite a été enregistrée avec succès.");
 
     document.getElementById("visiteForm").reset();
-
-    document.getElementById("rubriquesVisite").innerHTML =
-      "";
-
-    document.getElementById("tauxConformite").textContent =
-      "0 %";
+    document.getElementById("rubriquesVisite").innerHTML = "";
+    document.getElementById("tauxConformite").textContent = "0 %";
 
     retourDashboard();
   }
@@ -868,8 +901,7 @@
       ? 0
       : Math.round(
           visitesRole.reduce(function(total, visite) {
-            return total +
-              Number(visite.tauxConformite || 0);
+            return total + Number(visite.tauxConformite || 0);
           }, 0) / visitesRole.length
         );
 
@@ -889,9 +921,7 @@
       document.getElementById("listeVisites");
 
     if (visitesRole.length === 0) {
-      liste.innerHTML =
-        "Aucune visite enregistrée.";
-
+      liste.innerHTML = "Aucune visite enregistrée.";
       return;
     }
 
@@ -904,6 +934,27 @@
       })
       .slice(0, 10)
       .forEach(function(visite) {
+
+        let detailsEvaluations = "";
+
+        if (visite.evaluations) {
+          detailsEvaluations = visite.evaluations
+            .filter(function(item) {
+              return item.evaluation;
+            })
+            .map(function(item) {
+              return `
+                <div>
+                  ${item.intitule} :
+                  <span class="badge ${obtenirClasseBadge(item.evaluation)}">
+                    ${obtenirLibelleEvaluation(item.evaluation)}
+                  </span>
+                </div>
+              `;
+            })
+            .join("");
+        }
+
         liste.innerHTML += `
           <div class="visite-liste">
             <strong>${visite.type}</strong><br>
@@ -911,18 +962,20 @@
             <b>Date :</b> ${visite.date}<br>
             <b>Visiteur :</b> ${visite.visiteur}<br>
             <b>Statut :</b> ${visite.statut}<br>
-            <b>Conformité :</b>
-            ${visite.tauxConformite} %
+            <b>Conformité :</b> ${visite.tauxConformite} %
+
+            ${
+              detailsEvaluations
+                ? `<hr><b>Évaluations :</b>${detailsEvaluations}`
+                : ""
+            }
           </div>
         `;
       });
   }
 
   function deconnexion() {
-    localStorage.removeItem(
-      "utilisateurConnecte"
-    );
-
+    localStorage.removeItem("utilisateurConnecte");
     window.location.href = "index.html";
   }
 
