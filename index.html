@@ -36,7 +36,6 @@
     }
 
     .portal {
-      width: 100%;
       min-height: 100vh;
       background: #f4f6f8;
     }
@@ -82,16 +81,26 @@
     }
 
     input,
+    select,
+    textarea,
     button {
       width: 100%;
       padding: 14px;
       margin-top: 12px;
       border-radius: 8px;
       font-size: 16px;
+      font-family: Arial, sans-serif;
     }
 
-    input {
+    input,
+    select,
+    textarea {
       border: 1px solid #cbd5e1;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
     }
 
     button {
@@ -117,6 +126,22 @@
       background: #b91c1c;
     }
 
+    .bouton-secondaire {
+      background: #64748b;
+    }
+
+    .bouton-secondaire:hover {
+      background: #475569;
+    }
+
+    .bouton-danger {
+      background: #991b1b;
+    }
+
+    .bouton-danger:hover {
+      background: #7f1d1d;
+    }
+
     .message {
       margin-top: 15px;
       color: #dc2626;
@@ -139,7 +164,9 @@
       margin-top: 25px;
     }
 
-    .carte-statistique {
+    .carte-statistique,
+    .bloc-role,
+    .bloc-visites {
       background: white;
       padding: 25px;
       border-radius: 14px;
@@ -158,12 +185,49 @@
       color: #2453d4;
     }
 
-    .bloc-role {
-      background: white;
-      padding: 20px;
+    .bloc-role,
+    .bloc-visites {
       margin-top: 25px;
-      border-radius: 14px;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .actions button {
+      width: auto;
+      min-width: 180px;
+    }
+
+    .tableau-conteneur {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eff6ff;
+      color: #1e40af;
+    }
+
+    .message-tableau {
+      text-align: center;
+      color: #6b7280;
     }
 
     @media (max-width: 600px) {
@@ -179,6 +243,14 @@
       .contenu {
         padding: 20px;
       }
+
+      .card {
+        padding: 24px;
+      }
+
+      .actions button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -189,7 +261,10 @@
   <section id="pageConnexion" class="page">
     <div class="card">
       <h1>Suivi des visites magasin</h1>
-      <p class="sous-titre">Connectez-vous à votre espace professionnel</p>
+
+      <p class="sous-titre">
+        Connectez-vous à votre espace professionnel
+      </p>
 
       <form id="formConnexion">
         <input
@@ -234,13 +309,16 @@
     </header>
 
     <main class="contenu">
+
       <h2>Bienvenue dans votre portail</h2>
 
       <p class="sous-titre">
-        Retrouvez ici les informations principales de votre activité.
+        Gérez vos visites magasin depuis cet espace.
       </p>
 
+      <!-- STATISTIQUES -->
       <div class="cartes">
+
         <div class="carte-statistique">
           <h3>Visites du mois</h3>
           <div id="visitesMois" class="valeur">0</div>
@@ -255,8 +333,10 @@
           <h3>Visites terminées</h3>
           <div id="visitesTerminees" class="valeur">0</div>
         </div>
+
       </div>
 
+      <!-- INFORMATIONS UTILISATEUR -->
       <div class="bloc-role">
         <h2>Votre espace</h2>
 
@@ -271,136 +351,463 @@
         </p>
 
         <p>
-          Votre portail est correctement connecté.
+          Les données sont enregistrées localement dans ce navigateur.
         </p>
       </div>
+
+      <!-- FORMULAIRE DE VISITE -->
+      <div class="bloc-visites">
+        <h2>Créer une fiche visite</h2>
+
+        <form id="formVisite">
+
+          <input
+            type="text"
+            id="client"
+            placeholder="Nom du client"
+            required
+          >
+
+          <input
+            type="text"
+            id="magasin"
+            placeholder="Magasin concerné"
+            required
+          >
+
+          <input
+            type="date"
+            id="dateVisite"
+            required
+          >
+
+          <select id="statut" required>
+            <option value="">Sélectionner un statut</option>
+            <option value="À planifier">À planifier</option>
+            <option value="En cours">En cours</option>
+            <option value="Terminée">Terminée</option>
+          </select>
+
+          <textarea
+            id="commentaire"
+            placeholder="Commentaire ou compte rendu"
+          ></textarea>
+
+          <button type="submit">
+            Enregistrer la visite
+          </button>
+
+          <button
+            type="button"
+            id="boutonReinitialiser"
+            class="bouton-secondaire"
+          >
+            Réinitialiser le formulaire
+          </button>
+
+        </form>
+
+        <div id="messageVisite" class="message"></div>
+      </div>
+
+      <!-- LISTE DES VISITES -->
+      <div class="bloc-visites">
+        <h2>Liste des visites</h2>
+
+        <div class="actions">
+          <button
+            type="button"
+            id="boutonExporter"
+            class="bouton-secondaire"
+          >
+            Exporter en CSV
+          </button>
+
+          <button
+            type="button"
+            id="boutonSupprimerTout"
+            class="bouton-danger"
+          >
+            Supprimer toutes les visites
+          </button>
+        </div>
+
+        <div class="tableau-conteneur">
+          <table>
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Magasin</th>
+                <th>Date</th>
+                <th>Statut</th>
+                <th>Commentaire</th>
+              </tr>
+            </thead>
+
+            <tbody id="tableauVisites"></tbody>
+          </table>
+        </div>
+      </div>
+
     </main>
   </section>
 
-<script>
-const API_URL =
-  "https://script.google.com/macros/s/AKfycbzj_5Kvmu8T51FUF63BNWnalE0B2AVE0Ngi45ULlj3kEzonmDr8Np9ZKCZdTuRHZ0yg/exec";
-
-  let tokenSession = null;
-
-  const pageConnexion = document.getElementById("pageConnexion");
-  const pagePortail = document.getElementById("pagePortail");
-  const formConnexion = document.getElementById("formConnexion");
-  const messageConnexion = document.getElementById("messageConnexion");
-
-  async function appelerAPI(donnees) {
-    const reponse = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
+  <script>
+    /*
+      COMPTES UTILISATEURS
+      Les mots de passe sont visibles dans le code.
+      Cette solution convient à un prototype ou à un usage interne.
+    */
+    const utilisateurs = [
+      {
+        email: "rrh@test.com",
+        motDePasse: "1234",
+        nom: "RRH",
+        role: "Ressources humaines"
       },
-      body: JSON.stringify(donnees)
-    });
+      {
+        email: "dr@test.com",
+        motDePasse: "1234",
+        nom: "DR",
+        role: "Direction régionale"
+      },
+      {
+        email: "rov@test.com",
+        motDePasse: "1234",
+        nom: "ROV",
+        role: "Responsable opérationnel"
+      }
+    ];
 
-    return await reponse.json();
-  }
+    let utilisateurConnecte = null;
 
-  formConnexion.addEventListener("submit", async function(event) {
-    event.preventDefault();
+    const pageConnexion =
+      document.getElementById("pageConnexion");
 
-    const email = document.getElementById("email").value.trim();
-    const motDePasse =
-      document.getElementById("motDePasse").value;
+    const pagePortail =
+      document.getElementById("pagePortail");
 
-    messageConnexion.textContent = "Connexion en cours...";
+    const formConnexion =
+      document.getElementById("formConnexion");
 
-    try {
-      const resultat = await appelerAPI({
-        action: "connexion",
-        email: email,
-        motDePasse: motDePasse
+    const formVisite =
+      document.getElementById("formVisite");
+
+    const messageConnexion =
+      document.getElementById("messageConnexion");
+
+    const messageVisite =
+      document.getElementById("messageVisite");
+
+    /*
+      CONNEXION
+    */
+    formConnexion.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const email =
+        document.getElementById("email").value.trim().toLowerCase();
+
+      const motDePasse =
+        document.getElementById("motDePasse").value;
+
+      const utilisateur = utilisateurs.find(function(compte) {
+        return (
+          compte.email === email &&
+          compte.motDePasse === motDePasse
+        );
       });
 
-      if (!resultat.success) {
-        messageConnexion.textContent = resultat.message;
+      if (!utilisateur) {
+        messageConnexion.textContent =
+          "Adresse e-mail ou mot de passe incorrect.";
         return;
       }
 
-      tokenSession = resultat.token;
+      utilisateurConnecte = utilisateur;
 
-      afficherPortail(resultat.utilisateur);
-      chargerDonneesPortail();
-
-    } catch (erreur) {
-      console.error(erreur);
-      messageConnexion.textContent =
-        "Impossible de contacter le serveur.";
-    }
-  });
-
-  document
-    .getElementById("boutonDeconnexion")
-    .addEventListener("click", async function() {
-      try {
-        await appelerAPI({
-          action: "deconnexion",
-          token: tokenSession
-        });
-      } catch (erreur) {
-        console.error(erreur);
-      }
-
-      tokenSession = null;
-      afficherConnexion();
+      afficherPortail();
+      actualiserPortail();
     });
 
-  function afficherPortail(utilisateur) {
-    pageConnexion.classList.add("cache");
-    pagePortail.classList.remove("cache");
-
-    document.getElementById("nomUtilisateur").textContent =
-      utilisateur.nom || "";
-
-    document.getElementById("roleUtilisateur").textContent =
-      utilisateur.role || "";
-
-    document.getElementById("identiteUtilisateur").textContent =
-      (utilisateur.nom || "") + " - " +
-      (utilisateur.role || "");
-  }
-
-  function afficherConnexion() {
-    pagePortail.classList.add("cache");
-    pageConnexion.classList.remove("cache");
-
-    formConnexion.reset();
-    messageConnexion.textContent = "";
-  }
-
-  async function chargerDonneesPortail() {
-    try {
-      const resultat = await appelerAPI({
-        action: "obtenirDonneesPortail",
-        token: tokenSession
-      });
-
-      if (!resultat.success) {
-        tokenSession = null;
+    /*
+      DÉCONNEXION
+    */
+    document
+      .getElementById("boutonDeconnexion")
+      .addEventListener("click", function() {
+        utilisateurConnecte = null;
         afficherConnexion();
-        messageConnexion.textContent = resultat.message;
-        return;
-      }
+      });
+
+    function afficherPortail() {
+      pageConnexion.classList.add("cache");
+      pagePortail.classList.remove("cache");
+
+      document.getElementById("nomUtilisateur").textContent =
+        utilisateurConnecte.nom;
+
+      document.getElementById("roleUtilisateur").textContent =
+        utilisateurConnecte.role;
+
+      document.getElementById("identiteUtilisateur").textContent =
+        utilisateurConnecte.nom + " - " +
+        utilisateurConnecte.role;
+    }
+
+    function afficherConnexion() {
+      pagePortail.classList.add("cache");
+      pageConnexion.classList.remove("cache");
+
+      formConnexion.reset();
+      messageConnexion.textContent = "";
+    }
+
+    /*
+      GESTION DES VISITES
+    */
+    function obtenirVisites() {
+      return JSON.parse(
+        localStorage.getItem("visitesMagasin") || "[]"
+      );
+    }
+
+    function enregistrerVisites(visites) {
+      localStorage.setItem(
+        "visitesMagasin",
+        JSON.stringify(visites)
+      );
+    }
+
+    formVisite.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const visite = {
+        client: document.getElementById("client").value.trim(),
+        magasin: document.getElementById("magasin").value.trim(),
+        date: document.getElementById("dateVisite").value,
+        statut: document.getElementById("statut").value,
+        commentaire: document
+          .getElementById("commentaire")
+          .value
+          .trim(),
+        creeePar: utilisateurConnecte.email,
+        dateCreation: new Date().toISOString()
+      };
+
+      const visites = obtenirVisites();
+
+      visites.push(visite);
+
+      enregistrerVisites(visites);
+
+      formVisite.reset();
+
+      messageVisite.textContent =
+        "La visite a été enregistrée avec succès.";
+
+      messageVisite.classList.add("succes");
+
+      actualiserPortail();
+
+      setTimeout(function() {
+        messageVisite.textContent = "";
+        messageVisite.classList.remove("succes");
+      }, 3000);
+    });
+
+    document
+      .getElementById("boutonReinitialiser")
+      .addEventListener("click", function() {
+        formVisite.reset();
+        messageVisite.textContent = "";
+      });
+
+    /*
+      ACTUALISATION DES STATISTIQUES
+    */
+    function actualiserPortail() {
+      const visites = obtenirVisites();
+
+      const maintenant = new Date();
+      const moisActuel = maintenant.getMonth();
+      const anneeActuelle = maintenant.getFullYear();
+
+      const visitesDuMois = visites.filter(function(visite) {
+        if (!visite.date) {
+          return false;
+        }
+
+        const date = new Date(visite.date + "T00:00:00");
+
+        return (
+          date.getMonth() === moisActuel &&
+          date.getFullYear() === anneeActuelle
+        );
+      });
 
       document.getElementById("visitesMois").textContent =
-        resultat.statistiques.visitesMois;
+        visitesDuMois.length;
 
       document.getElementById("visitesAPlanifier").textContent =
-        resultat.statistiques.visitesAPlanifier;
+        visites.filter(function(visite) {
+          return visite.statut === "À planifier";
+        }).length;
 
       document.getElementById("visitesTerminees").textContent =
-        resultat.statistiques.visitesTerminees;
+        visites.filter(function(visite) {
+          return visite.statut === "Terminée";
+        }).length;
 
-    } catch (erreur) {
-      console.error(erreur);
-      messageConnexion.textContent =
-        "Impossible de charger les données.";
+      afficherTableau(visites);
     }
-  }
-</script>
+
+    /*
+      AFFICHAGE DU TABLEAU
+    */
+    function afficherTableau(visites) {
+      const tableau =
+        document.getElementById("tableauVisites");
+
+      tableau.innerHTML = "";
+
+      if (visites.length === 0) {
+        tableau.innerHTML =
+          '<tr><td colspan="5" class="message-tableau">' +
+          "Aucune visite enregistrée." +
+          "</td></tr>";
+
+        return;
+      }
+
+      visites.forEach(function(visite) {
+        const ligne = document.createElement("tr");
+
+        ligne.innerHTML =
+          "<td>" + securiser(visite.client) + "</td>" +
+          "<td>" + securiser(visite.magasin) + "</td>" +
+          "<td>" + formaterDate(visite.date) + "</td>" +
+          "<td>" + securiser(visite.statut) + "</td>" +
+          "<td>" + securiser(visite.commentaire) + "</td>";
+
+        tableau.appendChild(ligne);
+      });
+    }
+
+    function formaterDate(date) {
+      if (!date) {
+        return "";
+      }
+
+      const parties = date.split("-");
+
+      if (parties.length !== 3) {
+        return securiser(date);
+      }
+
+      return parties[2] + "/" + parties[1] + "/" + parties[0];
+    }
+
+    function securiser(valeur) {
+      return String(valeur || "")
+        .replace(/&/g, "&")
+        .replace(/</g, "<")
+        .replace(/>/g, ">")
+        .replace(/"/g, """)
+        .replace(/'/g, "&#039;");
+    }
+
+    /*
+      EXPORT CSV
+    */
+    document
+      .getElementById("boutonExporter")
+      .addEventListener("click", function() {
+        const visites = obtenirVisites();
+
+        if (visites.length === 0) {
+          alert("Aucune visite à exporter.");
+          return;
+        }
+
+        const entetes = [
+          "Client",
+          "Magasin",
+          "Date",
+          "Statut",
+          "Commentaire",
+          "Créée par"
+        ];
+
+        const lignes = visites.map(function(visite) {
+          return [
+            visite.client,
+            visite.magasin,
+            visite.date,
+            visite.statut,
+            visite.commentaire,
+            visite.creePar
+          ];
+        });
+
+        const contenuCsv = [entetes, ...lignes]
+          .map(function(ligne) {
+            return ligne
+              .map(function(cellule) {
+                return '"' +
+                  String(cellule || "")
+                    .replace(/"/g, '""') +
+                  '"';
+              })
+              .join(";");
+          })
+          .join("\n");
+
+        const fichier = new Blob(
+          ["\ufeff" + contenuCsv],
+          {
+            type: "text/csv;charset=utf-8;"
+          }
+        );
+
+        const url = URL.createObjectURL(fichier);
+        const lien = document.createElement("a");
+
+        lien.href = url;
+        lien.download = "visites-magasin.csv";
+        lien.click();
+
+        URL.revokeObjectURL(url);
+      });
+
+    /*
+      SUPPRESSION DES VISITES
+    */
+    document
+      .getElementById("boutonSupprimerTout")
+      .addEventListener("click", function() {
+        const visites = obtenirVisites();
+
+        if (visites.length === 0) {
+          alert("Aucune visite à supprimer.");
+          return;
+        }
+
+        const confirmation = confirm(
+          "Voulez-vous vraiment supprimer toutes les visites ?"
+        );
+
+        if (!confirmation) {
+          return;
+        }
+
+        localStorage.removeItem("visitesMagasin");
+
+        actualiserPortail();
+
+        alert("Toutes les visites ont été supprimées.");
+      });
+  </script>
+
 </body>
 </html>
